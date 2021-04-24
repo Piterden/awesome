@@ -1,4 +1,4 @@
--- [ author ] -*- time-stamp-pattern: "@Changed[\s]?:[\s]+%%$"; -*- ------------
+-- [ author ] -*- time-stamp-pattern: '@Changed[\s]?:[\s]+%%$'; -*- ------------
 -- @File   : rc.lua
 -- @Author : Marcel Arpogaus <marcel dot arpogaus at gmail dot com>
 --
@@ -27,11 +27,12 @@ local os = os
 
 -- Standard awesome library
 local awful = require('awful')
+local naughty = require('naughty')
 
 -- rc modules
 local error_handling = require('rc.error_handling')
-local elements = require("rc.elements")
-local assets = require("rc.assets")
+local elements = require('rc.elements')
+local assets = require('rc.assets')
 local key_bindings = require('rc.key_bindings')
 local layouts = require('rc.layouts')
 local menu = require('rc.menu')
@@ -40,7 +41,7 @@ local rules = require('rc.rules')
 local screen = require('rc.screen')
 local signals = require('rc.signals')
 local tags = require('rc.tags')
-local themes = require("rc.themes")
+local themes = require('rc.themes')
 local utils = require('rc.utils')
 
 -- Mac OSX like 'Expose' view of all clients.
@@ -51,6 +52,16 @@ local config = utils.load_config()
 
 -- ensure that there's always a client that has focus
 require('awful.autofocus')
+
+local vicious = require('vicious')
+
+naughty.config.icon_dirs = {
+  '/home/den/.local/share/icons',
+  '/usr/share/pixmaps',
+  '/usr/share/icons/ArchLabs/48x48/status/',
+  '/usr/share/icons/ArchLabs/48x48/devices/',
+}
+naughty.config.icon_formats = { 'png', 'gif', 'svg' }
 
 -- [ initialization ] ----------------------------------------------------------
 -- error handling
@@ -98,6 +109,8 @@ end
 
 -- Initialize revelation
 revelation.init()
+
+local kbdlayout = require('rc.kbdlayout')
 
 -- [ autorun programs ] --------------------------------------------------------
 awful.spawn.with_shell('~/.config/awesome/autorun.sh')

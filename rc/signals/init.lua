@@ -174,26 +174,26 @@ module.init = function()
             end
         )
     end
-    capi.client.connect_signal(
-        'property::floating', function(c)
-            if c.floating and not c.requests_no_titlebars then
-                awful.titlebar.show(c)
-            else
-                awful.titlebar.hide(c)
-            end
-        end
-    )
-    capi.tag.connect_signal(
-        'property::layout', function(t)
-            for _, c in pairs(t:clients()) do
-                if t.layout.name == 'floating' and not c.requests_no_titlebars then
-                    awful.titlebar.show(c)
-                else
-                    awful.titlebar.hide(c)
-                end
-            end
-        end
-    )
+    -- capi.client.connect_signal(
+    --     'property::floating', function(c)
+    --         if c.floating and not c.requests_no_titlebars then
+    --             awful.titlebar.show(c)
+    --         else
+    --             awful.titlebar.hide(c)
+    --         end
+    --     end
+    -- )
+    -- capi.tag.connect_signal(
+    --     'property::layout', function(t)
+    --         for _, c in pairs(t:clients()) do
+    --             if t.layout.name == 'floating' and not c.requests_no_titlebars then
+    --                 awful.titlebar.show(c)
+    --             else
+    --                 awful.titlebar.hide(c)
+    --             end
+    --         end
+    --     end
+    -- )
 end
 
 -- [ return module ] -----------------------------------------------------------

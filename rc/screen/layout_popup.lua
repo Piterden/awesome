@@ -32,33 +32,33 @@ local beautiful = require('beautiful')
 local module = {}
 
 -- [ module functions ] --------------------------------------------------------
-module.init = function(lb)
+module.init = function(s)
     local p = awful.popup {
+        screen = s,
         widget = wibox.widget {
             awful.widget.layoutlist {
                 source = awful.widget.layoutlist.source.default_layouts,
-                screen = 1,
                 base_layout = wibox.widget {
-                    spacing = 5,
+                    spacing         = 5,
                     forced_num_cols = 3,
-                    layout = wibox.layout.grid.vertical
+                    layout          = wibox.layout.grid.vertical,
                 },
                 widget_template = {
                     {
                         {
-                            id = 'icon_role',
-                            forced_height = 32,
-                            forced_width = 32,
-                            widget = wibox.widget.imagebox
+                            id              = 'icon_role',
+                            forced_height   = 32,
+                            forced_width    = 32,
+                            widget          = wibox.widget.imagebox,
                         },
                         margins = 4,
-                        widget = wibox.container.margin
+                        widget  = wibox.container.margin,
                     },
-                    id = 'background_role',
+                    id      = 'background_role',
                     -- forced_width    = 24,
                     -- forced_height   = 24,
-                    shape = gears.shape.rounded_rect,
-                    widget = wibox.container.background
+                    shape   = gears.shape.rounded_rect,
+                    widget  = wibox.container.background,
                 }
             },
             margins = 4,
@@ -71,7 +71,7 @@ module.init = function(lb)
         hide_on_right_click = true,
         visible = false
     }
-    p:bind_to_widget(lb)
+    p:bind_to_widget(s.mylayoutbox)
     return p
 end
 

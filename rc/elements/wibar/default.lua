@@ -36,6 +36,10 @@ local module = {}
 -- [ module functions ] --------------------------------------------------------
 module.init = function(config)
     local mykeyboardlayout = awful.widget.keyboardlayout()
+    local systray = wibox.widget.systray()
+    systray:set_horizontal(true)
+    systray:set_base_size(20)
+    systray.forced_height = 20
     local element = abstract_element.new {
         register_fn = function(s)
             -- Create the wibox
@@ -45,8 +49,9 @@ module.init = function(config)
             s.left_widget_container = {s.mymainmenu, s.mytaglist, s.mypromptbox}
             s.left_widget_container.layout = wibox.layout.fixed.horizontal
 
+
             s.right_widget_container = gears.table.join(
-                {mykeyboardlayout, wibox.widget.systray()},
+                {mykeyboardlayout, systray},
                 utils.gen_wibar_widgets(s, config),
                 {s.mylayoutbox, s.myexitmenu}
             )

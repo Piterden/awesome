@@ -66,7 +66,7 @@ module.init = function(
         -- Create an imagebox widget which will contain an icon indicating which layout we're using.
         -- We need one layoutbox per screen.
         s.mylayoutbox = awful.widget.layoutbox(s)
-        s.layout_popup = layout_popup.init(s.mylayoutbox)
+        s.layout_popup = layout_popup.init(s)
         s.mylayoutbox:buttons(
             gears.table.join(
                 awful.button(
@@ -93,20 +93,19 @@ module.init = function(
                            'default'](s, tasklist_buttons)
 
         -- menus
-        if config.mainmenu == nil and config.mainmenu ~= false then
-            s.mymainmenu = awful.widget.launcher(
-                {image = beautiful.awesome_icon, menu = mainmenu}
-            )
-        end
-        if config.exitmenu then
-            s.myexitmenu = awful.widget.launcher(
-                {
-                    image = beautiful.exitmenu_icon or
-                        menubar.utils.lookup_icon('system-shutdown'),
-                    menu = exitmenu
-                }
-            )
-        end
+        -- if config.mainmenu == nil and config.mainmenu ~= false then
+        -- end
+        s.mymainmenu = awful.widget.launcher({
+            image = beautiful.awesome_icon,
+            menu = mainmenu,
+        })
+        -- if config.exitmenu == true then
+        -- end
+        s.myexitmenu = awful.widget.launcher({
+            image = beautiful.exitmenu_icon or
+                menubar.utils.lookup_icon('system-shutdown'),
+            menu = exitmenu,
+        })
 
         -- Dynamic widget management
         s.elements = {}

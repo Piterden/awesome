@@ -165,7 +165,8 @@ module.init = function(config, mainmenu)
     if config.tasklist == 'windows' or beautiful.tasklist == 'windows' then
         module.tasklist_buttons = gears.table.join(
             awful.button({}, 1, client_stack_toggle_fn()),
-            awful.button({}, 3, client_menu_toggle_fn()), awful.button(
+            awful.button({}, 3, client_menu_toggle_fn()),
+            awful.button(
                 {}, 4, function()
                     awful.client.focus.byidx(1)
                 end

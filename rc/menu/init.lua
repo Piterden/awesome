@@ -49,6 +49,7 @@ module.init = function(config)
     local gui_editor = config.gui_editor
     local terminal = config.terminal
     local lock_command = config.lock_command
+    local telegram = config.telegram
 
     local myawesomemenu = {
         {
@@ -77,8 +78,13 @@ module.init = function(config)
 
     module.mainmenu = freedesktop.menu.build(
         {
-            icon_size = 32,
+            icon_size = 64,
             before = {
+                {
+                    'Telegram',
+                    telegram,
+                    menubar.utils.lookup_icon('telegram-desktop')
+                },
                 {
                     'Terminal',
                     terminal,
@@ -140,7 +146,7 @@ module.init = function(config)
                 menubar.utils.lookup_icon('system-shutdown')
             }
         }
-        module.exitmenu = awful.menu({icon_size = 32, items = myexitmenu})
+        module.exitmenu = awful.menu({icon_size = 64, items = myexitmenu})
     end
 end
 

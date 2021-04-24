@@ -58,7 +58,7 @@ module.create_wibar_widget = function()
 
     -- popup calendar
     local cal_widget = awful.widget.calendar_popup.month {
-        font = utils.set_font_size(beautiful.font, 16),
+        font = utils.set_font_size(beautiful.font, 12),
         week_numbers = true,
         long_weekdays = true,
         opacity = 0.9,

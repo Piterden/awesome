@@ -27,6 +27,7 @@ local capi = {client = client}
 
 local awful = require('awful')
 local wibox = require('wibox')
+local gears = require('gears')
 local beautiful = require('beautiful')
 
 -- [ local objects ] -----------------------------------------------------------
@@ -35,21 +36,85 @@ local module = {}
 -- [ module functions ] --------------------------------------------------------
 module.default = function(s, tasklist_buttons)
     local tasklist = awful.widget.tasklist {
-        screen = s,
-        filter = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
+        screen  = s,
+        filter  = awful.widget.tasklist.filter.currenttags,
+        buttons = tasklist_buttons,
+        style    = {
+            shape_border_width  = 2,
+            shape_border_color  = '#777777',
+            shape               = gears.shape.rounded_bar,
+        },
+        layout  = {
+            spacing         = 5,
+            max_widget_size = 260,
+            layout          = wibox.layout.flex.horizontal,
+        },
+        widget_template = {
+            {
+                {
+                    {
+                        {
+                            id     = 'icon_role',
+                            widget = wibox.widget.imagebox,
+                        },
+                        margins = 2,
+                        right   = 5,
+                        left    = 7,
+                        widget  = wibox.container.margin,
+                    },
+                    {
+                        id     = 'text_role',
+                        widget = wibox.widget.textbox,
+                    },
+                    {
+                        id = 'tag_role',
+                        {
+                            {
+                                id     = 'tag_name',
+                                widget = wibox.widget.textbox,
+                                align  = 'center',
+                                valign = 'center',
+                            },
+                            bg                  = '#fbdb65',
+                            fg                  = '#000000',
+                            shape_border_width  = 1,
+                            shape_border_color  = '#007700',
+                            shape               = gears.shape.rounded_bar,
+                            forced_width        = 20,
+                            widget              = wibox.container.background,
+                        },
+                        margins = 5,
+                        widget  = wibox.container.margin,
+                    },
+                    layout = wibox.layout.align.horizontal,
+                },
+                margins = 2,
+                widget  = wibox.container.margin
+            },
+            id              = 'background_role',
+            widget          = wibox.container.background,
+            create_callback = function(self, c, index, objects) --luacheck: no unused args
+                self:get_children_by_id('tag_name')[1].text    = c:tags()[1].name
+                self:get_children_by_id('tag_role')[1].visible = #s.selected_tags > 1
+            end,
+            update_callback = function(self, c, index, objects) --luacheck: no unused args
+                self:get_children_by_id('tag_name')[1].text    = c:tags()[1].name
+                self:get_children_by_id('tag_role')[1].visible = #s.selected_tags > 1
+                self:emit_signal('widget::redraw_needed')
+            end,
+        },
     }
     return tasklist
 end
 
 module.windows = function(s, tasklist_buttons)
     local tasklist = awful.widget.tasklist {
-        screen = s,
-        filter = awful.widget.tasklist.filter.currenttags,
+        screen  = s,
+        filter  = awful.widget.tasklist.filter.currenttags,
         buttons = tasklist_buttons,
-        layout = {
+        layout  = {
             spacing = beautiful.systray_icon_spacing,
-            layout = wibox.layout.fixed.horizontal
+            layout  = wibox.layout.fixed.horizontal,
         },
         -- Notice that there is *NO* wibox.wibox prefix, it is a template,
         -- not a widget instance.
@@ -64,7 +129,7 @@ module.windows = function(s, tasklist_buttons)
                 nil,
                 {id = 'clienticon', widget = awful.widget.clienticon},
                 nil,
-                expand = 'none',
+                -- expand = 'none',
                 id = 'clienticoncontainer',
                 widget = wibox.layout.align.horizontal
             },
