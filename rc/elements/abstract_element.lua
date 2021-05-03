@@ -47,9 +47,7 @@ module.new = function(def)
         else
             if s.elements[element] then
                 gears.debug.print_warning(
-
-                   
-                        'cant register: element is already registered on this screen.'
+                    'cant register: element is already registered on this screen.'
                 )
             else
                 s.elements[element] = true

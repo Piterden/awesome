@@ -46,6 +46,7 @@ local function client_menu_toggle_fn()
         end
     end
 end
+
 -- ref.: https://stackoverflow.com/questions/62286322/grouping-windows-in-the-tasklist
 local function client_label(c)
     local theme = beautiful.get()
@@ -120,7 +121,7 @@ local function client_stack_toggle_fn()
 
             if client_num > 1 then
                 cl_menu = awful.menu(
-                    {items = client_list, theme = {width = 1000}}
+                    {items = client_list}
                 )
                 cl_menu:show()
             else
@@ -140,25 +141,30 @@ module.init = function(config, mainmenu)
             {}, 1, function(t)
                 t:view_only()
             end
-        ), awful.button(
+        ),
+        awful.button(
             {modkey}, 1, function(t)
                 if capi.client.focus then
                     capi.client.focus:move_to_tag(t)
                 end
             end
-        ), awful.button({}, 3, awful.tag.viewtoggle), awful.button(
+        ),
+        awful.button({}, 3, awful.tag.viewtoggle),
+        awful.button(
             {modkey}, 3, function(t)
                 if capi.client.focus then
                     capi.client.focus:toggle_tag(t)
                 end
             end
-        ), awful.button(
+        ),
+        awful.button(
             {}, 4, function(t)
-                awful.tag.viewnext(t.screen)
-            end
-        ), awful.button(
-            {}, 5, function(t)
                 awful.tag.viewprev(t.screen)
+            end
+        ),
+        awful.button(
+            {}, 5, function(t)
+                awful.tag.viewnext(t.screen)
             end
         )
     )
@@ -178,27 +184,24 @@ module.init = function(config, mainmenu)
         )
     else
         module.tasklist_buttons = gears.table.join(
+            awful.button({}, 1, client_stack_toggle_fn()),
             awful.button(
-                {}, 1, function(c)
-                    if c == capi.client.focus then
-                        c.minimized = true
-                    else
-                        c:emit_signal(
-                            'request::activate', 'tasklist', {raise = true}
-                        )
-                    end
-                end
-            ), awful.button(
                 {}, 3, function()
                     awful.menu.client_list({theme = {width = 250}})
                 end
-            ), awful.button(
-                {}, 4, function()
-                    awful.client.focus.byidx(1)
+            ),
+            awful.button(
+                {}, 4, function(c)
+                    capi.client.focus = c;
+                    c:raise()
+                    mainmenu:hide()
                 end
-            ), awful.button(
-                {}, 5, function()
-                    awful.client.focus.byidx(-1)
+            ),
+            awful.button(
+                {}, 5, function(c)
+                    capi.client.focus = c;
+                    c:raise()
+                    mainmenu:hide()
                 end
             )
         )
@@ -222,7 +225,8 @@ module.init = function(config, mainmenu)
             {}, 3, function()
                 mainmenu:toggle()
             end
-        ), awful.button({}, 4, awful.tag.viewnext),
+        ),
+        awful.button({}, 4, awful.tag.viewnext),
         awful.button({}, 5, awful.tag.viewprev)
     )
     capi.root.buttons(root)

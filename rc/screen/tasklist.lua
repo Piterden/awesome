@@ -39,7 +39,7 @@ module.default = function(s, tasklist_buttons)
         screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
         buttons = tasklist_buttons,
-        style    = {
+        style   = {
             shape_border_width  = 2,
             shape_border_color  = '#777777',
             shape               = gears.shape.rounded_bar,
@@ -67,7 +67,6 @@ module.default = function(s, tasklist_buttons)
                         widget = wibox.widget.textbox,
                     },
                     {
-                        id = 'tag_role',
                         {
                             {
                                 id     = 'tag_name',
@@ -83,6 +82,7 @@ module.default = function(s, tasklist_buttons)
                             forced_width        = 20,
                             widget              = wibox.container.background,
                         },
+                        id      = 'tag_role',
                         margins = 5,
                         widget  = wibox.container.margin,
                     },
@@ -103,6 +103,38 @@ module.default = function(s, tasklist_buttons)
                 self:emit_signal('widget::redraw_needed')
             end,
         },
+        source = function()
+            -- Get all clients
+            local cls = capi.client.get()
+
+            -- Filter by an existing filter function and allowing only one client per class
+            -- local clients = {}
+            local class_seen = {}
+            for _, c in pairs(cls) do
+                if awful.widget.tasklist.filter.currenttags(c, s) then
+                    if not class_seen[c.class] then
+                        class_seen[c.class] = 1
+                        -- clients[c.class] = c
+                    else
+                        class_seen[c.class] = class_seen[c.class] + 1
+                        -- clients[c.class] = c
+                    end
+                    -- clients[c.class].multiple_instances = class_seen[c.class]
+                end
+            end
+            local ret = {}
+            for _, c in pairs(cls) do
+                c.instances = class_seen[c.class]
+                table.insert(ret, c)
+            end
+            -- local tsort = gears.sort.topological()
+            -- gears.table.sort(ret)
+
+            -- gears.debug.dump(ret, '1', 30)
+            -- print('\n')
+
+            return ret
+        end,
     }
     return tasklist
 end

@@ -89,7 +89,7 @@ elements.init(config)
 menu.init(config)
 
 -- mouse bindings
-mouse_bindings.init(config, menu.mainmenu)
+mouse_bindings.init(config, menu.mainmenu, menu.clientmenu)
 
 -- key bindings
 key_bindings.init(config, menu.mainmenu)

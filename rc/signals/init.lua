@@ -67,7 +67,8 @@ module.init = function()
                         )
                         awful.mouse.client.move(c)
                     end
-                ), awful.button(
+                ),
+                awful.button(
                     {}, 3, function()
                         c:emit_signal(
                             'request::activate', 'titlebar', {raise = true}
@@ -174,6 +175,9 @@ module.init = function()
             end
         )
     end
+    capi.awesome.connect_signal('screen::change', function(s)
+        gears.debug.dump(s)
+    end)
     -- capi.client.connect_signal(
     --     'property::floating', function(c)
     --         if c.floating and not c.requests_no_titlebars then

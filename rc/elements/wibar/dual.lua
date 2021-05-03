@@ -23,7 +23,9 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
+local capi = {root = root}
 local awful = require('awful')
+local gears = require('gears')
 local wibox = require('wibox')
 local beautiful = require('beautiful')
 
@@ -81,8 +83,8 @@ module.init = function(config)
                 {
                     position = 'bottom',
                     screen = s,
-                    height = 32,
-                    -- height = beautiful.bottom_bar_height,
+                    -- height = 32,
+                    height = beautiful.bottom_bar_height or 32,
                     bg = beautiful.bg_normal,
                     fg = beautiful.fg_normal
                 }
@@ -114,17 +116,76 @@ module.init = function(config)
                     layout  = wibox.layout.fixed.horizontal
                 }
             }
+            local geom  = s.geometry
+            s.myoverlay = wibox({
+                screen  = s,
+                x       = geom.x,
+                y       = geom.y + beautiful.top_bar_height,
+                visible = true,
+                opacity = 0,
+                ontop   = false,
+                type    = 'splash',
+                width   = geom.width,
+                height  = geom.height - beautiful.top_bar_height - beautiful.bottom_bar_height,
+            })
 
             s.systray_set_screen = function()
                 if s.systray then
                     s.systray:set_screen(s)
                 end
             end
-            s:connect_signal('mouse::enter', s.systray_set_screen)
 
+            s.myoverlay:buttons(awful.util.table.join(
+                awful.button({}, 1,
+                    function(self)
+                        local coords = mouse.coords()
+                        gears.debug.dump(self, 'window', 20)
+                        self.input_passthrough = true
+                        capi.root.fake_input('button_press', 1)
+                        self.input_passthrough = false
+                    end,
+                    capi.root.fake_input('button_release', 1)
+                ),
+                awful.button({}, 3,
+                    function(self)
+                        local coords = mouse.coords()
+                        -- gears.debug.dump(x, y)
+                        self.input_passthrough = true
+                        capi.root.fake_input('button_press', 3)
+                        self.input_passthrough = false
+                    end,
+                    capi.root.fake_input('button_release', 3)
+                ),
+                awful.button({}, 4,
+                    function(self)
+                        local coords = mouse.coords()
+                        -- gears.debug.dump(coords.x, coords.y)
+                        self.input_passthrough = true
+                        capi.root.fake_input('button_press', 4)
+                        self.input_passthrough = false
+                    end,
+                    capi.root.fake_input('button_release', 4)
+                ),
+                awful.button({}, 5,
+                    function(self)
+                        local coords = mouse.coords()
+                        -- gears.debug.dump(coords.x, coords.y)
+                        self.input_passthrough = true
+                        capi.root.fake_input('button_press', 5)
+                        self.input_passthrough = false
+                    end,
+                    capi.root.fake_input('button_release', 5)
+                )
+            ))
+
+            s.myoverlay:connect_signal('mouse::enter', s.systray_set_screen)
+            s:connect_signal('mouse::enter', s.systray_set_screen)
         end,
         unregister_fn = function(s)
             utils.unregister_wibar_widgtes(s)
+
+            s.myoverlay:remove()
+            s.myoverlay = nil
 
             s.mytopwibar.widget:reset()
             s.mytopwibar:remove()
