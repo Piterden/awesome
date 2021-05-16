@@ -45,7 +45,7 @@ module.default = function(s, tasklist_buttons)
             shape               = gears.shape.rounded_bar,
         },
         layout  = {
-            spacing         = 5,
+            spacing         = 3,
             max_widget_size = 260,
             layout          = wibox.layout.flex.horizontal,
         },
@@ -88,8 +88,8 @@ module.default = function(s, tasklist_buttons)
                     },
                     layout = wibox.layout.align.horizontal,
                 },
-                margins = 2,
-                widget  = wibox.container.margin
+                margins = 0,
+                widget  = wibox.container.margin,
             },
             id              = 'background_role',
             widget          = wibox.container.background,

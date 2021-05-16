@@ -135,47 +135,42 @@ module.init = function(config)
                 end
             end
 
-            s.myoverlay:buttons(awful.util.table.join(
+            s.myoverlay:buttons(gears.table.join(
                 awful.button({}, 1,
-                    function(self)
-                        local coords = mouse.coords()
-                        gears.debug.dump(self, 'window', 20)
-                        self.input_passthrough = true
-                        capi.root.fake_input('button_press', 1)
-                        self.input_passthrough = false
-                    end,
-                    capi.root.fake_input('button_release', 1)
-                ),
-                awful.button({}, 3,
-                    function(self)
-                        local coords = mouse.coords()
-                        -- gears.debug.dump(x, y)
-                        self.input_passthrough = true
-                        capi.root.fake_input('button_press', 3)
-                        self.input_passthrough = false
-                    end,
-                    capi.root.fake_input('button_release', 3)
-                ),
-                awful.button({}, 4,
-                    function(self)
-                        local coords = mouse.coords()
-                        -- gears.debug.dump(coords.x, coords.y)
-                        self.input_passthrough = true
-                        capi.root.fake_input('button_press', 4)
-                        self.input_passthrough = false
-                    end,
-                    capi.root.fake_input('button_release', 4)
-                ),
-                awful.button({}, 5,
-                    function(self)
-                        local coords = mouse.coords()
-                        -- gears.debug.dump(coords.x, coords.y)
-                        self.input_passthrough = true
-                        capi.root.fake_input('button_press', 5)
-                        self.input_passthrough = false
-                    end,
-                    capi.root.fake_input('button_release', 5)
+                    function()
+                        s.mymainmenu:show()
+                    end
                 )
+                -- awful.button({}, 3,
+                --     function(self)
+                --         local coords = mouse.coords()
+                --         -- gears.debug.dump(x, y)
+                --         self.input_passthrough = true
+                --         capi.root.fake_input('button_press', 3)
+                --         self.input_passthrough = false
+                --     end,
+                --     capi.root.fake_input('button_release', 3)
+                -- ),
+                -- awful.button({}, 4,
+                --     function(self)
+                --         local coords = mouse.coords()
+                --         -- gears.debug.dump(coords.x, coords.y)
+                --         self.input_passthrough = true
+                --         capi.root.fake_input('button_press', 4)
+                --         self.input_passthrough = false
+                --     end,
+                --     capi.root.fake_input('button_release', 4)
+                -- ),
+                -- awful.button({}, 5,
+                --     function(self)
+                --         local coords = mouse.coords()
+                --         -- gears.debug.dump(coords.x, coords.y)
+                --         self.input_passthrough = true
+                --         capi.root.fake_input('button_press', 5)
+                --         self.input_passthrough = false
+                --     end,
+                --     capi.root.fake_input('button_release', 5)
+                -- )
             ))
 
             s.myoverlay:connect_signal('mouse::enter', s.systray_set_screen)

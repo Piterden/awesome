@@ -37,10 +37,13 @@ local menubar = require('menubar')
 local hotkeys_popup = require('awful.hotkeys_popup').widget
 
 -- Mac OSX like 'Exposé' view
-local revelation = require('revelation')
+-- local revelation = require('revelation')
+
+-- local bling = require('bling')
 
 -- helper functions
 local utils = require('rc.utils')
+
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -89,8 +92,20 @@ module.init = function(config, mainmenu)
             end, {description = 'toggle wibox', group = 'awesome'}
         ),
         awful.key(
-            {modkey}, 'e', revelation,
-            {description = 'Mac OSX like \'Exposé\' view', group = 'awesome'}
+            {modkey}, 'e',
+            function()
+                local conf_dir = awful.util.getdir('config')
+                awful.spawn(
+                    "find " .. conf_dir .. " themes -type f " ..
+                    " -name 'theme.lua' | sed -r 's|^.*/([^/]+)/[^/]+$|\\1|' " ..
+                    " | sort | uniq ",
+                    function(stdout, stderr, exitreason, exitcode)
+                        awful.spawn(' sed -Ei "s/^(module\\.theme = [\\"\']).*?([\'\\"])/\\1' ..
+                            stdout .. '\2/g" ' .. conf_dir .. 'config.lua')
+                    end
+                )
+            end,
+            {description = 'Rofi AwesomeWM theme switcher', group = 'awesome'}
         ),
         awful.key(
             {modkey}, 'r', function()
@@ -234,6 +249,14 @@ module.init = function(config, mainmenu)
             {modkey}, 'u', awful.client.urgent.jumpto,
             {description = 'jump to urgent client', group = 'client'}
         ),
+        -- awful.key(
+        --     {modkey}, 'g', bling.module.tabbed.pick,
+        --     {description = 'pick client to tab group', group = 'client'}
+        -- ),
+        -- awful.key(
+        --     {modkey, 'Shift'}, 'g', bling.module.tabbed.pop,
+        --     {description = 'pop client from tab group', group = 'client'}
+        -- ),
         awful.key(
             {modkey}, 'Tab', function()
                 awful.client.focus.history.previous()

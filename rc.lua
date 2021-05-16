@@ -24,28 +24,31 @@
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
 local os = os
+local client = client
 
 -- Standard awesome library
 local awful = require('awful')
+local wibox = require('wibox')
+local gears = require('gears')
 local naughty = require('naughty')
 
 -- rc modules
-local error_handling = require('rc.error_handling')
-local elements = require('rc.elements')
-local assets = require('rc.assets')
-local key_bindings = require('rc.key_bindings')
-local layouts = require('rc.layouts')
 local menu = require('rc.menu')
-local mouse_bindings = require('rc.mouse_bindings')
-local rules = require('rc.rules')
-local screen = require('rc.screen')
-local signals = require('rc.signals')
 local tags = require('rc.tags')
-local themes = require('rc.themes')
+local rules = require('rc.rules')
 local utils = require('rc.utils')
+local assets = require('rc.assets')
+local screen = require('rc.screen')
+local themes = require('rc.themes')
+local layouts = require('rc.layouts')
+local signals = require('rc.signals')
+local elements = require('rc.elements')
+local key_bindings = require('rc.key_bindings')
+local error_handling = require('rc.error_handling')
+local mouse_bindings = require('rc.mouse_bindings')
 
 -- Mac OSX like 'Expose' view of all clients.
-local revelation = require('revelation')
+-- local revelation = require('revelation')
 
 -- configuration file
 local config = utils.load_config()
@@ -66,9 +69,6 @@ naughty.config.icon_formats = { 'png', 'gif', 'svg' }
 -- [ initialization ] ----------------------------------------------------------
 -- error handling
 error_handling.init()
-
--- connect signals
-signals.init()
 
 -- tags
 tags.init(config)
@@ -108,9 +108,19 @@ if elements.desktop then
 end
 
 -- Initialize revelation
-revelation.init()
+-- revelation.init()
 
 local kbdlayout = require('rc.kbdlayout')
+local bling = require('bling')
+local tabbed = require('bling.module.tabbed')
+
+awful.client.object.tabbed_module = tabbed
+
+-- connect signals
+signals.init()
+
+-- [[ ls -l ~/.config/awesome/themes | grep -P '^d.*' | awk '{print $NF}' | grep -Fv 'icons' ]]
+-- [[ find ~/.config/awesome/themes -type f -name 'theme.lua' | sed -r 's|^.*/([^/]+)/[^/]+$|\1|' | sort | uniq ]]
 
 -- [ autorun programs ] --------------------------------------------------------
 awful.spawn.with_shell('~/.config/awesome/autorun.sh')

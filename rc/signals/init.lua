@@ -29,6 +29,7 @@ local capi = {awesome = awesome, client = client, screen = screen, tag = tag}
 -- Standard awesome library
 local gears = require('gears')
 local awful = require('awful')
+local aclient = require("awful.client")
 
 -- Widget and layout library
 local wibox = require('wibox')
@@ -39,11 +40,26 @@ local beautiful = require('beautiful')
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 
+--- Create a new marked button for a client.
+-- @param c The client for which the button is wanted.
+function awful.titlebar.widget.markedbutton(c)
+    local widget = awful.titlebar.widget.button(
+        c,
+        "marked",
+        aclient.object.get_marked,
+        function()
+            c.marked = ~c.marked
+        end
+    )
+    c:connect_signal("property::marked", widget.update)
+    return widget
+end
+
 -- [ module functions ] --------------------------------------------------------
 module.init = function()
     -- Signal function to execute when a new client appears.
     capi.client.connect_signal(
-        'manage', function(c)
+        'request::manage', function(c)
             if capi.awesome.startup and not c.size_hints.user_position and
                 not c.size_hints.program_position then
                 -- Prevent clients from being unreachable after screen count changes.
@@ -61,19 +77,53 @@ module.init = function()
             -- buttons for the titlebar
             local buttons = gears.table.join(
                 awful.button(
-                    {}, 1, function()
+                    {}, 1,
+                    function()
+                        c.move_timer = gears.timer({
+                            timeout = 0.3,
+                            callback = function()
+                                awful.mouse.client.move(c)
+                                c.move_timer = nil
+                            end,
+                            single_shot = true,
+                        })
+                        c.move_timer:start()
+                    end,
+                    function()
                         c:emit_signal(
                             'request::activate', 'titlebar', {raise = true}
                         )
-                        awful.mouse.client.move(c)
+                        if (c.move_timer) then
+                            c.move_timer:stop()
+                            c.move_timer = nil
+                        end
                     end
                 ),
-                awful.button(
-                    {}, 3, function()
+                awful.button({}, 2, nil,
+                    function()
+                        c.tabbed_module.pick()
+                    end
+                ),
+                awful.button({}, 3,
+                    function()
+                        c.resize_timer = gears.timer({
+                            timeout = 0.3,
+                            callback = function()
+                                awful.mouse.client.resize(c)
+                                c.resize_timer = nil
+                            end,
+                            single_shot = true,
+                        })
+                        c.resize_timer:start()
+                    end,
+                    function()
                         c:emit_signal(
                             'request::activate', 'titlebar', {raise = true}
                         )
-                        awful.mouse.client.resize(c)
+                        if (c.resize_timer) then
+                            c.resize_timer:stop()
+                            c.resize_timer = nil
+                        end
                     end
                 )
             )
@@ -93,6 +143,7 @@ module.init = function()
                     layout = wibox.layout.flex.horizontal
                 },
                 { -- Right
+                    awful.titlebar.widget.markedbutton(c),
                     awful.titlebar.widget.floatingbutton(c),
                     awful.titlebar.widget.stickybutton(c),
                     awful.titlebar.widget.ontopbutton(c),

@@ -101,8 +101,8 @@ module.init = function(config, client_buttons, client_keys)
             rule = {name = 'doom-capture'},
             properties = {
                 tag = awful.screen.focused().selected_tags[0],
-                requests_no_titlebars = true,
-                titlebars_enabled = false,
+                requests_no_titlebars = false,
+                titlebars_enabled = true,
                 floating = true,
                 ontop = true,
                 placement = awful.placement.top

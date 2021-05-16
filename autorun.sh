@@ -35,6 +35,3 @@ run alttab -w 1 -d 1 -s 1 -i 64x64 -theme Numix-Circle -bg _rnd_low
 run setxkbmap -model pc104 -layout "us,ru" -option "grp:win_space_toggle"
 
 # sleep 2
-
-# local screen_opts=$(xrandr --current --query | grep -e '^\(\(HDMI\|e\?DP\)-\?[0-9]\) \(connected\)' -o | sed -E 's/(eDP-?[0-9]) connected/--output \1 --primary --mode 1920x1080 --pos 0x840 --rotate normal/g' | sed -E 's/(HDMI-?[0-9]) connected/--output \1 --mode 2560x1440 --pos 1920x0 --rotate normal/g' | paste -s -d " " -)
-# run xrandr $(echo "$screen_opts")
