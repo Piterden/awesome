@@ -78,6 +78,10 @@ layouts.init(config)
 
 -- theme
 themes.init(config)
+local bling = require('bling')
+local tabbed = require('bling.module.tabbed')
+
+awful.client.object.tabbed_module = tabbed
 
 -- assets
 assets.init(config)
@@ -93,6 +97,9 @@ mouse_bindings.init(config, menu.mainmenu, menu.clientmenu)
 
 -- key bindings
 key_bindings.init(config, menu.mainmenu)
+
+-- connect signals
+signals.init()
 
 -- rules
 rules.init(config, mouse_bindings.client_buttons, key_bindings.client_keys)
@@ -111,13 +118,7 @@ end
 -- revelation.init()
 
 local kbdlayout = require('rc.kbdlayout')
-local bling = require('bling')
-local tabbed = require('bling.module.tabbed')
 
-awful.client.object.tabbed_module = tabbed
-
--- connect signals
-signals.init()
 
 -- [[ ls -l ~/.config/awesome/themes | grep -P '^d.*' | awk '{print $NF}' | grep -Fv 'icons' ]]
 -- [[ find ~/.config/awesome/themes -type f -name 'theme.lua' | sed -r 's|^.*/([^/]+)/[^/]+$|\1|' | sort | uniq ]]

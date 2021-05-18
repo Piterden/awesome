@@ -24,7 +24,13 @@
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
 -- grab environment
-local capi = {awesome = awesome, client = client, screen = screen, tag = tag}
+local capi = {
+    tag = tag,
+    mouse = mouse,
+    client = client,
+    screen = screen,
+    awesome = awesome,
+}
 
 -- Standard awesome library
 local gears = require('gears')
@@ -36,6 +42,9 @@ local wibox = require('wibox')
 
 -- Theme handling library
 local beautiful = require('beautiful')
+
+-- helper functions
+local utils = require('rc.utils')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -79,23 +88,28 @@ module.init = function()
                 awful.button(
                     {}, 1,
                     function()
+                        c.mouse_coords = capi.mouse.coords()
+                        c:emit_signal('request::activate', 'titlebar', {raise = true})
                         c.move_timer = gears.timer({
                             timeout = 0.3,
                             callback = function()
+                                capi.mouse.coords(c.mouse_coords)
                                 awful.mouse.client.move(c)
-                                c.move_timer = nil
+                                c.move_timer   = nil
+                                c.mouse_coords = nil
                             end,
                             single_shot = true,
                         })
                         c.move_timer:start()
                     end,
                     function()
-                        c:emit_signal(
-                            'request::activate', 'titlebar', {raise = true}
-                        )
                         if (c.move_timer) then
                             c.move_timer:stop()
-                            c.move_timer = nil
+                            c.move_timer   = nil
+                            c.mouse_coords = nil
+                            utils.single_double_tap(function() end, function()
+                                awful.client.setmaster(c)
+                            end)
                         end
                     end
                 ),
@@ -106,23 +120,25 @@ module.init = function()
                 ),
                 awful.button({}, 3,
                     function()
+                        c.mouse_coords = capi.mouse.coords()
+                        c:emit_signal('request::activate', 'titlebar', {raise = true})
                         c.resize_timer = gears.timer({
                             timeout = 0.3,
                             callback = function()
+                                capi.mouse.coords(c.mouse_coords)
                                 awful.mouse.client.resize(c)
                                 c.resize_timer = nil
+                                c.mouse_coords = nil
                             end,
                             single_shot = true,
                         })
                         c.resize_timer:start()
                     end,
                     function()
-                        c:emit_signal(
-                            'request::activate', 'titlebar', {raise = true}
-                        )
                         if (c.resize_timer) then
                             c.resize_timer:stop()
                             c.resize_timer = nil
+                            c.mouse_coords = nil
                         end
                     end
                 )

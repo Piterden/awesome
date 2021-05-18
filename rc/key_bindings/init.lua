@@ -24,22 +24,24 @@
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
 -- grab environment
-local capi = {awesome = awesome, client = client, screen = screen, root = root}
+local capi = {
+    root      = root,
+    client    = client,
+    screen    = screen,
+    awesome   = awesome,
+    selection = selection
+}
 
 -- Standard awesome library
 local gears = require('gears')
 local awful = require('awful')
+local naughty = require('naughty')
 
 -- Theme handling library
 local menubar = require('menubar')
 
 -- hotkeys widget
 local hotkeys_popup = require('awful.hotkeys_popup').widget
-
--- Mac OSX like 'Exposé' view
--- local revelation = require('revelation')
-
--- local bling = require('bling')
 
 -- helper functions
 local utils = require('rc.utils')
@@ -95,17 +97,41 @@ module.init = function(config, mainmenu)
             {modkey}, 'e',
             function()
                 local conf_dir = awful.util.getdir('config')
-                awful.spawn(
-                    "find " .. conf_dir .. " themes -type f " ..
+                local themes_dir = conf_dir .. "themes"
+                local config_file = conf_dir .. "config.lua"
+                awful.spawn.easy_async_with_shell(
+                    "find " .. conf_dir .. " -type f " ..
                     " -name 'theme.lua' | sed -r 's|^.*/([^/]+)/[^/]+$|\\1|' " ..
-                    " | sort | uniq ",
-                    function(stdout, stderr, exitreason, exitcode)
-                        awful.spawn(' sed -Ei "s/^(module\\.theme = [\\"\']).*?([\'\\"])/\\1' ..
-                            stdout .. '\2/g" ' .. conf_dir .. 'config.lua')
+                    " | sort | uniq | rofi -dmenu",
+                    function(stdout)
+                        local updated_content = string.gsub(
+                            utils.readAll(config_file),
+                            "(module%.theme = ')[a-z0-9_-]+(')",
+                            "%1" .. stdout:match("^%s*(.-)%s*$") .. "%2"
+                        )
+                        utils.write(config_file, updated_content)
+                        capi.awesome.restart()
                     end
                 )
             end,
             {description = 'Rofi AwesomeWM theme switcher', group = 'awesome'}
+        ),
+        awful.key(
+            {'Control'}, '`',
+            function()
+                local sel = capi.selection()
+                awful.spawn.easy_async('gtrans ' .. sel, function (stdout)
+                    naughty.notify({
+                        preset   = naughty.config.presets.info,
+                        title    = 'Translation',
+                        text     = stdout,
+                        position = 'top_middle',
+                        bg       = '#1c375b80',
+                        fg       = '#fce17e',
+                    })
+                end)
+            end,
+            {description = 'Translator', group = 'awesome'}
         ),
         awful.key(
             {modkey}, 'r', function()

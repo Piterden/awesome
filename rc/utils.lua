@@ -388,5 +388,50 @@ function module.set_light()
     set_color_scheme('light', 'flattrcolor-dark')
 end
 
+local double_tap_timer = nil
+function module.single_double_tap(single_tap_function, double_tap_function)
+    if double_tap_timer then
+        double_tap_timer:stop()
+        double_tap_timer = nil
+        double_tap_function()
+        -- naughty.notify({text = "We got a double tap"})
+        return
+    end
+
+    double_tap_timer =
+        gears.timer.start_new(0.20, function()
+            double_tap_timer = nil
+            -- naughty.notify({text = "We got a single tap"})
+            if single_tap_function then
+                single_tap_function()
+            end
+            return false
+        end)
+end
+
+function module.readAll(file)
+    local f = assert(io.open(file, "rb"))
+    local content = f:read("*all")
+    f:close()
+    return content
+end
+
+-- Read an entire file.
+-- Use "a" in Lua 5.3; "*a" in Lua 5.1 and 5.2
+function module.readAll(filename)
+  local fh = assert(io.open(filename, "rb"))
+  local contents = assert(fh:read(_VERSION <= "Lua 5.2" and "*a" or "a"))
+  fh:close()
+  return contents
+end
+
+-- Write a string to a file.
+function module.write(filename, contents)
+  local fh = assert(io.open(filename, "wb"))
+  fh:write(contents)
+  fh:flush()
+  fh:close()
+end
+
 -- [ return module ]------------------------------------------------------------
 return module

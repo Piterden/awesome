@@ -1,3 +1,4 @@
+local gears = require('gears')
 local awful = require('awful')
 local xresources = require('beautiful.xresources')
 local dpi = xresources.apply_dpi
@@ -52,19 +53,20 @@ module.default_layout = 4
 -- module.assets = 'mac'
 
 -- Select theme
--- module.theme = 'halo'
-module.theme = 'halo'
+module.theme = 'elric'
 module.theme_overwrite = {
   gap_single_client  = false,
   -- useless_gap        = dpi(3),
   -- border_width       = dpi(1),
   menu_height        = dpi(24),
   menu_width         = dpi(220),
-  top_bar_height     = dpi(16),
-  bottom_bar_height  = dpi(32),
+  top_bar_height     = dpi(24),
+  bottom_bar_height  = dpi(40),
   icon_theme         = 'sunjack',
   -- menu_icon_theme    = 'Numix Circle',
   -- titlebar_font      = 'Iosevka Medium 8',
+  titlebar_bg_focus  = '#a0294c',
+  bg_focus           = '#a0294c',
   -- tasklist_font      = 'Iosevka Regular 8',
   -- tasklist_fg_normal = '#ffffff',
   -- tasklist_fg_focus  = '#000000',
@@ -74,6 +76,8 @@ module.theme_overwrite = {
   -- tabbar_bg_focus    = '#16A085',
   -- tabbar_font        = 'Iosevka Medium 11',
   -- tabbar_size        = dpi(12),
+  titlebar_marked_button_normal = gears.surface.load_from_shape(dpi(15), dpi(30), gears.shape.rectangle, '#000000'),
+  titlebar_marked_button_focus = gears.surface.load_from_shape(dpi(15), dpi(30), gears.shape.rectangle, '#FFFFFF'),
 }
 
 -- path to your wallpaper or 'xfconf-query' to use xconf
