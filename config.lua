@@ -53,7 +53,7 @@ module.default_layout = 4
 -- module.assets = 'mac'
 
 -- Select theme
-module.theme = 'elric'
+module.theme = 'rbown'
 module.theme_overwrite = {
   gap_single_client  = false,
   -- useless_gap        = dpi(3),
@@ -64,9 +64,11 @@ module.theme_overwrite = {
   bottom_bar_height  = dpi(40),
   icon_theme         = 'sunjack',
   -- menu_icon_theme    = 'Numix Circle',
-  -- titlebar_font      = 'Iosevka Medium 8',
-  titlebar_bg_focus  = '#a0294c',
-  bg_focus           = '#a0294c',
+  titlebar_font      = 'Iosevka Light 9',
+  titlebar_bg_focus  = '#14b87950',
+  titlebar_fg_focus  = '#000000',
+  bg_focus           = '#14b87950',
+  fg_focus           = '#000000',
   -- tasklist_font      = 'Iosevka Regular 8',
   -- tasklist_fg_normal = '#ffffff',
   -- tasklist_fg_focus  = '#000000',

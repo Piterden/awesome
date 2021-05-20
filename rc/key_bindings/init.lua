@@ -29,7 +29,7 @@ local capi = {
     client    = client,
     screen    = screen,
     awesome   = awesome,
-    selection = selection
+    selection = selection,
 }
 
 -- Standard awesome library
@@ -101,32 +101,42 @@ module.init = function(config, mainmenu)
                 local config_file = conf_dir .. "config.lua"
                 awful.spawn.easy_async_with_shell(
                     "find " .. conf_dir .. " -type f " ..
-                    " -name 'theme.lua' | sed -r 's|^.*/([^/]+)/[^/]+$|\\1|' " ..
-                    " | sort | uniq | rofi -dmenu",
+                    " -name 'theme.lua' | sed -r 's|^.*/([^/]+)/[^/]+$|\\1|'" ..
+                    " | sort | uniq | rofi -dmenu -dpi 72 -eh 2" ..
+                    " -window-title 'Choose theme' -font 'hack 12'" ..
+                    " -width 400 -lines 20 -columns 3 -select " .. config.theme,
                     function(stdout)
-                        local updated_content = string.gsub(
-                            utils.readAll(config_file),
-                            "(module%.theme = ')[a-z0-9_-]+(')",
-                            "%1" .. stdout:match("^%s*(.-)%s*$") .. "%2"
-                        )
-                        utils.write(config_file, updated_content)
-                        capi.awesome.restart()
+                        if stdout then
+                            local updated_content = string.gsub(
+                                utils.readAll(config_file),
+                                "(module%.theme = ')[a-z0-9_-]*(')",
+                                "%1" .. stdout:match("^%s*(.-)%s*$") .. "%2"
+                            )
+                            utils.write(config_file, updated_content)
+                            capi.awesome.restart()
+                        end
                     end
                 )
             end,
             {description = 'Rofi AwesomeWM theme switcher', group = 'awesome'}
         ),
         awful.key(
+            {modkey}, 'F1', function()
+                awful.spawn.easy_async_with_shell('flameshot gui', function() end)
+            end,
+            {description = 'capture a screenshot', group = 'screenshot'}
+        ),
+        awful.key(
             {'Control'}, '`',
             function()
                 local sel = capi.selection()
-                awful.spawn.easy_async('gtrans ' .. sel, function (stdout)
+                awful.spawn.easy_async_with_shell('gtrans ' .. '"' .. sel .. '"', function (stdout)
                     naughty.notify({
                         preset   = naughty.config.presets.info,
                         title    = 'Translation',
                         text     = stdout,
                         position = 'top_middle',
-                        bg       = '#1c375b80',
+                        bg       = '#1c375b30',
                         fg       = '#fce17e',
                     })
                 end)

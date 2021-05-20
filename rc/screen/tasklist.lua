@@ -54,12 +54,19 @@ module.default = function(s, tasklist_buttons)
                 {
                     {
                         {
-                            id     = 'icon_role',
-                            widget = wibox.widget.imagebox,
+                            {
+                                id     = 'icon_role',
+                                widget = wibox.widget.imagebox,
+                            },
+                            -- shape_border_width = 0,
+                            shape              = gears.shape.rounded_bar,
+                                forced_width        = 34,
+                                forced_height        = 34,
+                            shape_clip         = gears.shape.rounded_bar,
+                            widget             = wibox.container.background,
                         },
                         margins = 2,
-                        right   = 5,
-                        left    = 7,
+                        left    = 3,
                         widget  = wibox.container.margin,
                     },
                     {
@@ -77,7 +84,7 @@ module.default = function(s, tasklist_buttons)
                             bg                  = '#fbdb65',
                             fg                  = '#000000',
                             shape_border_width  = 1,
-                            shape_border_color  = '#007700',
+                            shape_border_color  = '#00770080',
                             shape               = gears.shape.rounded_bar,
                             forced_width        = 20,
                             widget              = wibox.container.background,

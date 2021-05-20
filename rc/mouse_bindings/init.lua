@@ -132,9 +132,14 @@ local function client_stack_toggle_fn()
 end
 
 -- [ module function ] ---------------------------------------------------------
-module.init = function(config, mainmenu)
+module.init = function(config, mainmenu, client_actions_menu)
     -- Default modkey.
     local modkey = config.modkey
+    local function activateClient (c)
+        capi.client.focus = c;
+        c:raise()
+        mainmenu:hide()
+    end
 
     module.taglist_buttons = gears.table.join(
         awful.button(
@@ -190,20 +195,8 @@ module.init = function(config, mainmenu)
                     awful.menu.client_list({theme = {width = 250}})
                 end
             ),
-            awful.button(
-                {}, 4, function(c)
-                    capi.client.focus = c;
-                    c:raise()
-                    mainmenu:hide()
-                end
-            ),
-            awful.button(
-                {}, 5, function(c)
-                    capi.client.focus = c;
-                    c:raise()
-                    mainmenu:hide()
-                end
-            )
+            awful.button({}, 4, activateClient),
+            awful.button({}, 5, activateClient)
         )
     end
     module.client_buttons = gears.table.join(
@@ -213,7 +206,8 @@ module.init = function(config, mainmenu)
                 c:raise()
                 mainmenu:hide()
             end
-        ), awful.button({modkey}, 1, awful.mouse.client.move),
+        ),
+        awful.button({modkey}, 1, awful.mouse.client.move),
         awful.button({modkey}, 3, awful.mouse.client.resize)
     )
     local root = gears.table.join(
