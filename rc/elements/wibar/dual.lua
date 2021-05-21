@@ -28,6 +28,7 @@ local awful = require('awful')
 local gears = require('gears')
 local wibox = require('wibox')
 local beautiful = require('beautiful')
+local dpi = require('beautiful.xresources').apply_dpi
 
 local abstract_element = require('rc.elements.abstract_element')
 local utils = require('rc.elements.wibar.utils')
@@ -57,7 +58,7 @@ module.init = function(config)
                 local myexitmenu = {
                     -- add margins
                     s.myexitmenu,
-                    left = beautiful.wibar_widgets_spacing or 12,
+                    left = beautiful.wibar_widgets_spacing or dpi(12),
                     widget = wibox.container.margin
                 }
                 table.insert(s.right_widget_container, myexitmenu)
@@ -84,7 +85,7 @@ module.init = function(config)
                     position = 'bottom',
                     screen = s,
                     -- height = 32,
-                    height = beautiful.bottom_bar_height or 32,
+                    height = beautiful.bottom_bar_height or dpi(32),
                     bg = beautiful.bg_normal,
                     fg = beautiful.fg_normal
                 }
@@ -99,7 +100,7 @@ module.init = function(config)
                 -- },
                 {
                     s.mymainmenu,
-                    right = 5,
+                    right = dpi(5),
                     widget = wibox.container.margin,
                 },
                 s.mytasklist,
@@ -107,7 +108,7 @@ module.init = function(config)
                 {
                     {
                         s.systray,
-                        margins = 3,
+                        margins = dpi(3),
                         widget = wibox.container.margin,
                     },
                     awful.widget.keyboardlayout(),

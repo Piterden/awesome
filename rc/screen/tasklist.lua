@@ -29,6 +29,7 @@ local awful = require('awful')
 local wibox = require('wibox')
 local gears = require('gears')
 local beautiful = require('beautiful')
+local dpi = require('beautiful.xresources').apply_dpi
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -40,13 +41,13 @@ module.default = function(s, tasklist_buttons)
         filter  = awful.widget.tasklist.filter.currenttags,
         buttons = tasklist_buttons,
         style   = {
-            shape_border_width  = 2,
+            shape_border_width  = dpi(2),
             shape_border_color  = '#777777',
             shape               = gears.shape.rounded_bar,
         },
         layout  = {
-            spacing         = 3,
-            max_widget_size = 260,
+            spacing         = dpi(3),
+            max_widget_size = dpi(260),
             layout          = wibox.layout.flex.horizontal,
         },
         widget_template = {
@@ -59,14 +60,14 @@ module.default = function(s, tasklist_buttons)
                                 widget = wibox.widget.imagebox,
                             },
                             -- shape_border_width = 0,
-                            shape              = gears.shape.rounded_bar,
-                                forced_width        = 34,
-                                forced_height        = 34,
-                            shape_clip         = gears.shape.rounded_bar,
-                            widget             = wibox.container.background,
+                            shape         = gears.shape.rounded_bar,
+                            forced_width  = dpi(36),
+                            forced_height = dpi(36),
+                            shape_clip    = gears.shape.rounded_bar,
+                            widget        = wibox.container.background,
                         },
-                        margins = 2,
-                        left    = 3,
+                        margins = dpi(2),
+                        -- left    = dpi(3),
                         widget  = wibox.container.margin,
                     },
                     {
@@ -81,21 +82,21 @@ module.default = function(s, tasklist_buttons)
                                 align  = 'center',
                                 valign = 'center',
                             },
-                            bg                  = '#fbdb65',
+                            bg                  = '#fbdb6599',
                             fg                  = '#000000',
-                            shape_border_width  = 1,
+                            shape_border_width  = dpi(1),
                             shape_border_color  = '#00770080',
                             shape               = gears.shape.rounded_bar,
-                            forced_width        = 20,
+                            forced_width        = dpi(20),
                             widget              = wibox.container.background,
                         },
                         id      = 'tag_role',
-                        margins = 5,
+                        margins = dpi(5),
                         widget  = wibox.container.margin,
                     },
                     layout = wibox.layout.align.horizontal,
                 },
-                margins = 0,
+                margins = dpi(0),
                 widget  = wibox.container.margin,
             },
             id              = 'background_role',
@@ -160,7 +161,7 @@ module.windows = function(s, tasklist_buttons)
         widget_template = {
             {
                 wibox.widget.base.make_widget(),
-                forced_height = 5,
+                forced_height = dpi(5),
                 id = 'clientstack',
                 widget = wibox.container.background
             },

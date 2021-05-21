@@ -53,7 +53,7 @@ module.default_layout = 4
 -- module.assets = 'mac'
 
 -- Select theme
-module.theme = 'rbown'
+module.theme = 'pinkneon'
 module.theme_overwrite = {
   gap_single_client  = false,
   -- useless_gap        = dpi(3),
