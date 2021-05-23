@@ -36,7 +36,7 @@ local config_path = gfs.get_configuration_dir()
 module.init = function(config)
     local theme_file
     if config.theme then
-        for _, path in ipairs {themes_path, config_path .. '/themes'} do
+        for _, path in ipairs {themes_path, config_path .. 'themes'} do
             theme_file = string.format('%s/%s/theme.lua', path, config.theme)
             if gfs.file_readable(theme_file) then
                 break

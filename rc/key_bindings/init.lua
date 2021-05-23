@@ -130,18 +130,23 @@ module.init = function(config, mainmenu)
             {'Control'}, '`',
             function()
                 local sel = capi.selection()
-                awful.spawn.easy_async_with_shell('gtrans ' .. '"' .. sel .. '"', function (stdout)
-                    naughty.notify({
-                        preset   = naughty.config.presets.info,
-                        title    = 'Translation',
-                        text     = stdout,
-                        position = 'top_middle',
-                        bg       = '#1c375b30',
-                        fg       = '#fce17e',
-                    })
-                end)
+                if not sel or sel == '' then return end
+                awful.spawn.easy_async_with_shell(
+                    "gtrans " .. "'" .. sel .. "'",
+                    function (stdout, stderr, reason, code)
+                        naughty.notify({
+                            preset        = naughty.config.presets.info,
+                            title         = 'Translate selection',
+                            text          = stdout,
+                            position      = 'top_middle',
+                            bg            = '#1c375b',
+                            fg            = '#fce17e',
+                            timeout       = 10,
+                        })
+                    end
+                )
             end,
-            {description = 'Translator', group = 'awesome'}
+            {description = 'Translate selection', group = 'awesome'}
         ),
         awful.key(
             {modkey}, 'r', function()
@@ -150,8 +155,7 @@ module.init = function(config, mainmenu)
                         prompt = 'Run: ',
                         hooks = {
                             {
-                                {},
-                                'Return',
+                                {}, 'Return',
                                 function(command)
                                     local result = awful.spawn(command)
                                     awful.screen.focused().mypromptbox.widget:set_text(
@@ -162,8 +166,7 @@ module.init = function(config, mainmenu)
                                 end
                             },
                             {
-                                {altkey},
-                                'Return',
+                                {altkey}, 'Return',
                                 function(command)
                                     local result =
                                         awful.spawn(
@@ -181,8 +184,7 @@ module.init = function(config, mainmenu)
                                 end
                             },
                             {
-                                {'Shift'},
-                                'Return',
+                                {'Shift'}, 'Return',
                                 function(command)
                                     local result =
                                         awful.spawn(
@@ -200,21 +202,48 @@ module.init = function(config, mainmenu)
                                 end
                             }
                         }
-                    }, awful.screen.focused().mypromptbox.widget, nil,
+                    },
+                    awful.screen.focused().mypromptbox.widget,
+                    nil,
                     awful.completion.shell,
                     awful.util.getdir('cache') .. '/history'
                 )
-            end, {description = 'run prompt', group = 'awesome'}
+            end,
+            {description = 'run prompt', group = 'awesome'}
         ),
         awful.key(
-            {modkey}, 'i', function()
+            {modkey}, 'i',
+            function()
                 awful.prompt.run {
                     prompt = 'Run Lua code: ',
                     textbox = awful.screen.focused().mypromptbox.widget,
-                    exe_callback = awful.util.eval,
-                    history_path = awful.util.get_cache_dir() .. '/history_eval'
+                    history_path = awful.util.get_cache_dir() .. '/history_eval',
+                    hooks = {
+                        {
+                            {}, 'Return',
+                            function(command)
+                                awful.util.eval(command)
+                            end
+                        },
+                        {
+                            {modkey}, 'Return',
+                            function(command)
+                                local result = awful.util.eval(command)
+                                if type(result) == 'string' and result then
+                                    naughty.notify({
+                                        preset        = naughty.config.presets.info,
+                                        title         = 'Output',
+                                        text          = result,
+                                        position      = 'top_middle',
+                                        timeout       = 10,
+                                    })
+                                end
+                            end
+                        },
+                    },
                 }
-            end, {description = 'lua execute prompt', group = 'awesome'}
+            end,
+            {description = 'lua execute prompt', group = 'awesome'}
         ),
         -- [ tag ]------------------------------------------------------------------
         -- awful.key(
@@ -285,14 +314,6 @@ module.init = function(config, mainmenu)
             {modkey}, 'u', awful.client.urgent.jumpto,
             {description = 'jump to urgent client', group = 'client'}
         ),
-        -- awful.key(
-        --     {modkey}, 'g', bling.module.tabbed.pick,
-        --     {description = 'pick client to tab group', group = 'client'}
-        -- ),
-        -- awful.key(
-        --     {modkey, 'Shift'}, 'g', bling.module.tabbed.pop,
-        --     {description = 'pop client from tab group', group = 'client'}
-        -- ),
         awful.key(
             {modkey}, 'Tab', function()
                 awful.client.focus.history.previous()
@@ -300,6 +321,14 @@ module.init = function(config, mainmenu)
                     capi.client.focus:raise()
                 end
             end, {description = 'go back', group = 'client'}
+        ),
+        awful.key(
+            {modkey, 'Shift'}, 'Tab', function()
+                awful.tag.history.restore()
+                if capi.client.focus then
+                    capi.client.focus:raise()
+                end
+            end, {description = 'go back', group = 'tag'}
         ),
         awful.key(
             {modkey}, 'j', function()

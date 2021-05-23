@@ -4,9 +4,11 @@ local capi = {client = client, screen = screen}
 
 local gears = require('gears')
 local awful = require('awful')
+local wibox = require('wibox')
 local beautiful = require('beautiful')
 local menubar = require('menubar')
 
+local taglist = require('rc.screen.taglist')
 local tasklist = require('rc.screen.tasklist')
 local layout_popup = require('rc.screen.layout_popup')
 
@@ -36,26 +38,9 @@ module.init = function(
             s.dpi = config.dpi
         end
 
-        -- If wallpaper is a function, call it with the screen
         local wallpaper = config.wallpaper or beautiful.wallpaper
         if type(wallpaper) == 'function' then
             gears.wallpaper.maximized(wallpaper(s), s, true)
-        elseif wallpaper == 'xfconf-query' then
-            local command =
-                'xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path'
-            awful.spawn.easy_async_with_shell(
-                command,
-                function(stdout, stderr, reason, exit_code) -- luacheck: no unused args
-                    if exit_code == 0 then
-                        local file_name = string.gsub(stdout, '\n', '')
-                        gears.wallpaper.maximized(file_name, s, true)
-                    else
-                        gears.wallpaper.maximized(
-                            beautiful.wallpaper(s), s, true
-                        )
-                    end
-                end
-            )
         else
             gears.wallpaper.maximized(wallpaper, s, true)
         end
@@ -82,11 +67,7 @@ module.init = function(
         )
 
         -- Create a taglist widget
-        s.mytaglist = awful.widget.taglist {
-            screen = s,
-            filter = awful.widget.taglist.filter.all,
-            buttons = taglist_buttons
-        }
+        s.mytaglist = taglist.init(s, taglist_buttons)
 
         -- Create a tasklist widget
         s.mytasklist = tasklist[config.tasklist or beautiful.tasklist or

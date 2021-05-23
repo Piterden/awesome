@@ -37,26 +37,33 @@ local module = {}
 
 -- [ module functions ] ---------------------------------------------------------
 module.init = function(config, client_buttons, client_keys)
-    -- Rules to apply to new clients (through the "manage" signal).
     module.rules = {
+        -- Rules to apply to new clients (through the "manage" signal).
         {
             rule = {},
+            except_any = {
+                class = {
+                    'TelegramDesktop',
+                    'flameshot',
+                },
+            },
             properties = {
-                border_width = beautiful.border_width,
-                border_color = beautiful.border_normal,
-                focus = awful.client.focus.filter,
-                raise = true,
-                keys = client_keys,
-                buttons = client_buttons,
-                size_hints_honor = false, -- Remove gaps between terminals
-                screen = awful.screen.preferred,
-                placement = awful.placement.center + awful.placement.no_overlap +
-                    awful.placement.no_offscreen,
-                switchtotag = true,
-                callback = awful.client.setslave,
+                keys                 = client_keys,
+                focus                = awful.client.focus.filter,
+                raise                = true,
+                screen               = awful.screen.preferred,
+                buttons              = client_buttons,
+                placement            = awful.placement.center +
+                                       awful.placement.no_overlap +
+                                       awful.placement.no_offscreen,
+                callback             = awful.client.setslave,
+                switchtotag          = true,
+                border_width         = beautiful.border_width,
+                border_color         = beautiful.border_normal,
+                size_hints_honor     = false, -- Remove gaps between terminals
+                titlebars_enabled    = true,
                 requests_no_titlebar = false,
-                titlebars_enabled = true
-            }
+            },
         },
         -- Floating clients.
         {
@@ -64,7 +71,7 @@ module.init = function(config, client_buttons, client_keys)
                 instance = {
                     'DTA', -- Firefox addon DownThemAll.
                     'copyq', -- Includes session name in class.
-                    'pinentry'
+                    'pinentry',
                 },
                 class = {
                     'Arandr',
@@ -76,39 +83,52 @@ module.init = function(config, client_buttons, client_keys)
                     'Tor Browser', -- Needs a fixed window size to avoid fingerprinting by screen size.
                     'Wpa_gui',
                     'veromix',
-                    'xtightvncviewer'
+                    'xtightvncviewer',
                 },
 
                 -- Note that the name property shown in xprop might be set slightly after creation of the client
                 -- and the name shown there might not match defined rules here.
                 name = {
-                    'Event Tester' -- xev.
+                    'Event Tester', -- xev.
                 },
                 role = {
                     'AlarmWindow', -- Thunderbird's calendar.
                     'ConfigManager', -- Thunderbird's about:config.
-                    'pop-up' -- e.g. Google Chrome's (detached) Developer Tools.
-                }
+                    'pop-up', -- e.g. Google Chrome's (detached) Developer Tools.
+                },
             },
-            properties = {floating = true}
-        },
-        -- Add titlebars to normal clients and dialogs
-        {
-            rule_any = {type = {'dialog'}},
-            properties = {titlebars_enabled = true}
+            properties = {floating = true},
         },
         {
-            rule = {name = 'doom-capture'},
+            rule_any = {
+                class = {'TelegramDesktop'},
+            },
             properties = {
-                tag = awful.screen.focused().selected_tags[0],
-                requests_no_titlebars = false,
-                titlebars_enabled = true,
-                floating = true,
-                ontop = true,
-                placement = awful.placement.top
-                -- maximized_horizontal = true,
-            }
-        }
+                tag = '1',
+                screen = 1,
+                placement = awful.placement.maximized,
+            },
+        },
+        {
+            rule = {
+                class = 'flameshot',
+            },
+            properties = {
+                border_width      = 0,
+                ontop             = true,
+                sticky            = true,
+                floating          = true,
+                titlebars_enabled = false,
+                motif_wm_hints    = {
+                    functions = {
+                        all      = true,
+                        resize   = true,
+                        minimize = true,
+                        maximize = true,
+                    },
+                },
+            },
+        },
     }
     if config.dynamic_tagging then
         gears.table.merge(

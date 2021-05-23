@@ -24,12 +24,19 @@
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
 -- grab environment
-local capi = {client = client, root = root}
+local capi = {
+    root = root,
+    mouse = mouse,
+    client = client,
+}
 
 -- Standard awesome library
 local gears = require('gears')
 local awful = require('awful')
 local beautiful = require('beautiful')
+
+-- helper functions
+local utils = require('rc.utils')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -120,9 +127,7 @@ local function client_stack_toggle_fn()
             end
 
             if client_num > 1 then
-                cl_menu = awful.menu(
-                    {items = client_list}
-                )
+                cl_menu = awful.menu({items = client_list})
                 cl_menu:show()
             else
                 c:emit_signal('request::activate', 'taskbar', {raise = true})
@@ -136,9 +141,8 @@ module.init = function(config, mainmenu, client_actions_menu)
     -- Default modkey.
     local modkey = config.modkey
     local function activateClient (c)
-        capi.client.focus = c;
-        c:raise()
-        mainmenu:hide()
+        c:emit_signal('request::activate', 'mouse', {raise = true})
+        awesome.emit_signal('menus::hide::all', 'mouse')
     end
 
     module.taglist_buttons = gears.table.join(
@@ -173,6 +177,7 @@ module.init = function(config, mainmenu, client_actions_menu)
             end
         )
     )
+
     if config.tasklist == 'windows' or beautiful.tasklist == 'windows' then
         module.tasklist_buttons = gears.table.join(
             awful.button({}, 1, client_stack_toggle_fn()),
@@ -189,7 +194,9 @@ module.init = function(config, mainmenu, client_actions_menu)
         )
     else
         module.tasklist_buttons = gears.table.join(
-            awful.button({}, 1, client_stack_toggle_fn()),
+            awful.button({}, 1, function(c)
+                activateClient(c)
+            end),
             awful.button(
                 {}, 3, function()
                     awful.menu.client_list({theme = {width = 250}})
@@ -199,21 +206,82 @@ module.init = function(config, mainmenu, client_actions_menu)
             awful.button({}, 5, activateClient)
         )
     end
+
     module.client_buttons = gears.table.join(
-        awful.button(
-            {}, 1, function(c)
-                capi.client.focus = c;
-                c:raise()
-                mainmenu:hide()
-            end
-        ),
         awful.button({modkey}, 1, awful.mouse.client.move),
         awful.button({modkey}, 3, awful.mouse.client.resize)
     )
+
+    module.titlebar_buttons = function(c)
+        return gears.table.join(
+            awful.button(
+                {}, 1,
+                function()
+                    c.mouse_coords = capi.mouse.coords()
+                    capi.root.cursor('watch')
+                    c.move_timer = gears.timer({
+                        timeout = 0.3,
+                        callback = function()
+                            capi.mouse.coords(c.mouse_coords)
+                            awful.mouse.client.move(c)
+                            c.move_timer   = nil
+                            c.mouse_coords = nil
+                            capi.root.cursor('left_ptr')
+                        end,
+                        single_shot = true,
+                    })
+                    c.move_timer:start()
+                end,
+                function()
+                    capi.root.cursor('left_ptr')
+                    if (c.move_timer) then
+                        c.move_timer:stop()
+                        c.move_timer   = nil
+                        c.mouse_coords = nil
+                        utils.single_double_tap(function() end, function()
+                            awful.client.setmaster(c)
+                        end)
+                    end
+                end
+            ),
+            awful.button({}, 2, nil,
+                function()
+                    c.tabbed_module.pick()
+                end
+            ),
+            awful.button({}, 3,
+                function()
+                    c.mouse_coords = capi.mouse.coords()
+                    capi.root.cursor('watch')
+                    c.resize_timer = gears.timer({
+                        timeout = 0.3,
+                        callback = function()
+                            capi.mouse.coords(c.mouse_coords)
+                            awful.mouse.client.resize(c)
+                            c.resize_timer = nil
+                            c.mouse_coords = nil
+                            capi.root.cursor('left_ptr')
+                        end,
+                        single_shot = true,
+                    })
+                    c.resize_timer:start()
+                end,
+                function()
+                    capi.root.cursor('left_ptr')
+                    if (c.resize_timer) then
+                        c.resize_timer:stop()
+                        c.resize_timer = nil
+                        c.mouse_coords = nil
+                    end
+                end
+            )
+        )
+    end
+
     local root = gears.table.join(
         awful.button(
             {}, 1, function()
-                mainmenu:hide()
+                awesome.emit_signal('menus::hide::all', 'mouse')
             end
         ), awful.button(
             {}, 3, function()

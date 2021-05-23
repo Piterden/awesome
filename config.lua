@@ -53,11 +53,12 @@ module.default_layout = 4
 -- module.assets = 'mac'
 
 -- Select theme
-module.theme = 'pinkneon'
+module.theme = 'xresources'
 module.theme_overwrite = {
   gap_single_client  = false,
   -- useless_gap        = dpi(3),
   -- border_width       = dpi(1),
+  menu_bg_normal     = '#00000065',
   menu_height        = dpi(24),
   menu_width         = dpi(220),
   top_bar_height     = dpi(24),

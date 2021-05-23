@@ -56,7 +56,7 @@ module.gen_wibar_widgets = function(s, config)
                              widgets_arg[gears.string.split(w, '_')[1]] or {}
             warg = gears.table.clone(warg)
             warg.color = warg.color or fg_wibar_widgets[cidx]
-            local widget_container, registered_widgets = wibar_widgets[w](warg)
+            local widget_container, registered_widgets = wibar_widgets[w](s, warg)
             table.insert(s.wibar_widget_containers, widget_container)
             s.registered_wibar_widgets =
                 gears.table.join(s.registered_wibar_widgets, registered_widgets)

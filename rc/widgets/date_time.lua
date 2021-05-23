@@ -37,7 +37,7 @@ local module = {}
 -- [ module functions ] --------------------------------------------------------
 os.setlocale(os.getenv('LANG')) -- to localize the clock
 
-module.create_wibar_widget = function()
+module.create_wibar_widget = function(s)
     local clock_icon = utils.fa_ico(beautiful.fg_wibar_widgets_calendar, '')
 
     local clock_widget = wibox.widget.textclock(
@@ -58,6 +58,7 @@ module.create_wibar_widget = function()
 
     -- popup calendar
     local cal_widget = awful.widget.calendar_popup.month {
+        screen = s,
         font = utils.set_font_size(beautiful.font, 12),
         week_numbers = true,
         long_weekdays = true,

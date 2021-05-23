@@ -148,6 +148,11 @@ module.init = function(config)
         }
         module.exitmenu = awful.menu({icon_size = 64, items = myexitmenu})
     end
+
+    awesome.connect_signal('menus::hide::all', function ()
+        module.mainmenu:hide()
+        module.exitmenu:hide()
+    end)
 end
 
 -- [ return module ] -----------------------------------------------------------

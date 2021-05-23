@@ -36,11 +36,11 @@ local weather = require('rc.widgets.weather')
 -- [ local objects ] -----------------------------------------------------------
 local module = {
     weather = weather.create_wibar_widget,
-    net_down = function(warg)
+    net_down = function(s, warg)
         warg.value = 'down'
         return net.create_wibar_widget(warg)
     end,
-    net_up = function(warg)
+    net_up = function(s, warg)
         warg.value = 'up'
         return net.create_wibar_widget(warg)
     end,

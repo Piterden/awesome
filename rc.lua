@@ -80,8 +80,16 @@ layouts.init(config)
 themes.init(config)
 local bling = require('bling')
 local tabbed = require('bling.module.tabbed')
-
 awful.client.object.tabbed_module = tabbed
+
+bling.widget.tag_preview.enable {
+    show_client_content = true, -- Whether or not to show the client content
+    x                   = 0,    -- The x-coord of the popup
+    y                   = 30,    -- The y-coord of the popup
+    scale               = 0.2,  -- The scale of the previews compared to the screen
+    honor_padding       = false, -- Honor padding when creating widget size
+    honor_workarea      = false, -- Honor work area when creating widget size
+}
 
 -- assets
 assets.init(config)
@@ -99,7 +107,7 @@ mouse_bindings.init(config, menu.mainmenu, menu.clientmenu)
 key_bindings.init(config, menu.mainmenu)
 
 -- connect signals
-signals.init()
+signals.init(mouse_bindings.titlebar_buttons)
 
 -- rules
 rules.init(config, mouse_bindings.client_buttons, key_bindings.client_keys)
