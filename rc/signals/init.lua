@@ -50,18 +50,18 @@ local module = {}
 
 --- Create a new marked button for a client.
 -- @param c The client for which the button is wanted.
--- function awful.titlebar.widget.markedbutton(c)
---     local widget = awful.titlebar.widget.button(
---         c,
---         "marked",
---         aclient.object.get_marked,
---         function()
---             c.marked = ~c.marked
---         end
---     )
---     c:connect_signal("property::marked", widget.update)
---     return widget
--- end
+local function markedbutton(c)
+    local widget = awful.widget.button(
+        c,
+        "marked",
+        awful.client.object.get_marked,
+        function()
+            c.marked = ~c.marked
+        end
+    )
+    c:connect_signal("property::marked", widget.update)
+    return widget
+end
 
 -- [ module functions ] --------------------------------------------------------
 module.init = function(titlebar_buttons)
@@ -84,29 +84,39 @@ module.init = function(titlebar_buttons)
                 return
             end
 
-            awful.titlebar(c):setup{
-                { -- Left
-                    awful.titlebar.widget.iconwidget(c),
-                    buttons = titlebar_buttons(c),
-                    layout  = wibox.layout.fixed.horizontal,
+            local buttons = titlebar_buttons(c)
+
+            awful.titlebar(c, { size = 21 }):setup{
+                {
+                    { -- Left
+                        awful.titlebar.widget.iconwidget(c),
+                        buttons = buttons,
+                        layout  = wibox.layout.fixed.horizontal,
+                    },
+                    bottom = 1,
+                    widget = wibox.container.margin,
                 },
                 { -- Middle
                     { -- Title
                         align  = 'center',
                         widget = awful.titlebar.widget.titlewidget(c),
                     },
-                    buttons = titlebar_buttons(c),
+                    buttons = buttons,
                     layout  = wibox.layout.flex.horizontal,
                 },
-                { -- Right
-                    -- awful.titlebar.widget.markedbutton(c),
-                    awful.titlebar.widget.floatingbutton(c),
-                    awful.titlebar.widget.stickybutton(c),
-                    awful.titlebar.widget.ontopbutton(c),
-                    awful.titlebar.widget.maximizedbutton(c),
-                    awful.titlebar.widget.minimizebutton(c),
-                    awful.titlebar.widget.closebutton(c),
-                    layout = wibox.layout.fixed.horizontal,
+                {
+                    { -- Right
+                        awful.titlebar.widget.floatingbutton(c),
+                        -- markedbutton(c),
+                        awful.titlebar.widget.stickybutton(c),
+                        awful.titlebar.widget.ontopbutton(c),
+                        awful.titlebar.widget.maximizedbutton(c),
+                        awful.titlebar.widget.minimizebutton(c),
+                        awful.titlebar.widget.closebutton(c),
+                        layout = wibox.layout.fixed.horizontal,
+                    },
+                    bottom = 1,
+                    widget = wibox.container.margin,
                 },
                 layout = wibox.layout.align.horizontal,
             }

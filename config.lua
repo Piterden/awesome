@@ -6,12 +6,12 @@ local dpi = xresources.apply_dpi
 local module = {}
 
 -- [ applications ] ------------------------------------------------------------
-module.browser = 'exo-open --launch WebBrowser' or 'firefox'
-module.filemanager = 'exo-open --launch FileManager' or 'thunar'
+module.browser = 'google-chrome-stable'
+module.filemanager = 'thunar'
+module.telegram = 'telegram-desktop'
 module.gui_editor = os.getenv('EDITOR') or 'nano'
 module.lock_command = 'blurlock -f'
-module.telegram = 'telegram-desktop'
-module.terminal = os.getenv('TERMINAL') or 'urxvt'
+module.terminal = os.getenv('TERMINAL') or 'xterm'
 
 -- [ key bindings ] ------------------------------------------------------------
 -- Default modkey.
@@ -32,18 +32,18 @@ module.mainmenu = true
 -- module.tasklist = 'windows'
 
 -- overwrite default layout list
-module.layouts = {
-  awful.layout.suit.tile,
-  awful.layout.suit.tile.left,
-  awful.layout.suit.fair,
-  awful.layout.suit.fair.horizontal,
-  awful.layout.suit.spiral.dwindle,
-  awful.layout.suit.magnifier,
-  awful.layout.suit.floating,
-  awful.layout.suit.corner.nw,
-}
--- index of default layout to use on new tags
-module.default_layout = 4
+-- module.layouts = {
+--   awful.layout.suit.corner.nw,
+--   awful.layout.suit.tile,
+--   awful.layout.suit.tile.left,
+--   awful.layout.suit.fair,
+--   awful.layout.suit.fair.horizontal,
+--   awful.layout.suit.spiral.dwindle,
+--   awful.layout.suit.magnifier,
+--   awful.layout.suit.floating,
+-- }
+-- -- index of default layout to use on new tags
+-- module.default_layout = 1
 
 -- [ appearance ] --------------------------------------------------------------
 -- module.dpi = 144 -- set explicit dpi for every screen
@@ -53,34 +53,46 @@ module.default_layout = 4
 -- module.assets = 'mac'
 
 -- Select theme
-module.theme = 'xresources'
+module.theme = 'redhalo'
+local themedir = awful.util.getdir("config") .. "/themes/" .. module.theme
 module.theme_overwrite = {
-  gap_single_client  = false,
-  -- useless_gap        = dpi(3),
-  -- border_width       = dpi(1),
-  menu_bg_normal     = '#00000065',
-  menu_height        = dpi(24),
-  menu_width         = dpi(220),
-  top_bar_height     = dpi(24),
-  bottom_bar_height  = dpi(40),
-  icon_theme         = 'sunjack',
-  -- menu_icon_theme    = 'Numix Circle',
-  titlebar_font      = 'Iosevka Light 9',
-  titlebar_bg_focus  = '#14b87950',
-  titlebar_fg_focus  = '#000000',
-  bg_focus           = '#14b87950',
-  fg_focus           = '#000000',
-  -- tasklist_font      = 'Iosevka Regular 8',
-  -- tasklist_fg_normal = '#ffffff',
-  -- tasklist_fg_focus  = '#000000',
-  font               = 'Iosevka Medium 9',
-  tabbar_style       = 'xresources',
-  -- tabbar_fg_focus    = '#ff2500',
-  -- tabbar_bg_focus    = '#16A085',
-  -- tabbar_font        = 'Iosevka Medium 11',
-  -- tabbar_size        = dpi(12),
-  titlebar_marked_button_normal = gears.surface.load_from_shape(dpi(15), dpi(30), gears.shape.rectangle, '#000000'),
-  titlebar_marked_button_focus = gears.surface.load_from_shape(dpi(15), dpi(30), gears.shape.rectangle, '#FFFFFF'),
+  gap_single_client       = false,
+  fullscreen_hide_border  = true,
+  useless_gap             = 1,
+  border_width            = dpi(1),
+  menu_bg_normal          = '#262729d8',
+  menu_height             = dpi(32),
+  menu_width              = dpi(300),
+  menu_font               = 'Iosevka Bold 11',
+  top_bar_height          = dpi(24),
+  bottom_bar_height       = dpi(40),
+  icon_theme              = 'Numix Circle',
+  menu_icon_theme         = 'Numix Circle',
+  titlebar_font           = 'Iosevka Light 10',
+
+  titlebar_bg_focus       = '#a6e22e80',
+  titlebar_fg_focus       = '#262729',
+  titlebar_bg_normal      = '#262729d8',
+  -- titlebar_fg_normal       = '#262729',
+  -- bg_focus                = '#14b879FF',
+  -- fg_focus                = '#000000',
+  -- tasklist_font            = 'Iosevka Regular 8',
+  -- tasklist_fg_normal       = '#ffffff',
+  -- tasklist_fg_focus        = '#000000',
+  font                    = 'Iosevka Medium 9',
+  -- tabbar_style            = 'xresources',
+  -- tabbar_fg_focus          = '#ff2500',
+  -- tabbar_bg_focus          = '#16A085',
+  -- tabbar_font              = 'Iosevka Medium 11',
+  -- tabbar_size              = dpi(12),
+  -- titlebar_marked_button_normal_active = themedir .. "/titlebar/close_normal-red.png",
+  -- titlebar_marked_button_normal_inactive = themedir .. "/titlebar/close_normal-red.png",
+  -- titlebar_marked_button_focus_active = themedir .. "/titlebar/close_normal-red.png",
+  -- titlebar_marked_button_focus_inactive = themedir .. "/titlebar/close_normal-red.png",
+  -- titlebar_marked_button_normal_active = gears.surface.load_from_shape(dpi(15), dpi(30), gears.shape.rectangle, '#00000088'),
+  -- titlebar_marked_button_normal_inactive = gears.surface.load_from_shape(dpi(15), dpi(30), gears.shape.rectangle, '#ffffff88'),
+  -- titlebar_marked_button_focus_active = gears.surface.load_from_shape(dpi(15), dpi(30), gears.shape.rectangle, '#FFFFFF'),
+  -- titlebar_marked_button_focus_inactive = gears.surface.load_from_shape(dpi(15), dpi(30), gears.shape.rectangle, '#FFFFFF'),
 }
 
 -- path to your wallpaper or 'xfconf-query' to use xconf

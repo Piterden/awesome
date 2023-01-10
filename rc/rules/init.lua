@@ -43,7 +43,7 @@ module.init = function(config, client_buttons, client_keys)
             rule = {},
             except_any = {
                 class = {
-                    'TelegramDesktop',
+                    -- 'TelegramDesktop',
                     'flameshot',
                 },
             },
@@ -84,12 +84,20 @@ module.init = function(config, client_buttons, client_keys)
                     'Wpa_gui',
                     'veromix',
                     'xtightvncviewer',
+                    'timedoctor2',
+                    'zoom',
+                    'highlight-gui',
+                    'kdeconnect.app',
+                    'kdeconnect-app',
+                    'atomic',
+                    'Pavucontrol',
                 },
 
                 -- Note that the name property shown in xprop might be set slightly after creation of the client
                 -- and the name shown there might not match defined rules here.
                 name = {
                     'Event Tester', -- xev.
+                    'Media viewer',
                 },
                 role = {
                     'AlarmWindow', -- Thunderbird's calendar.
@@ -97,18 +105,25 @@ module.init = function(config, client_buttons, client_keys)
                     'pop-up', -- e.g. Google Chrome's (detached) Developer Tools.
                 },
             },
+            except_any = {
+                name = {
+                    'TaskInformer',
+                    'TaskInformer — Time Doctor 2',
+                },
+            },
             properties = {floating = true},
         },
-        {
-            rule_any = {
-                class = {'TelegramDesktop'},
-            },
-            properties = {
-                tag = '1',
-                screen = 1,
-                placement = awful.placement.maximized,
-            },
-        },
+        -- {
+        --     rule_any = {
+        --         class = {'TelegramDesktop'},
+        --     },
+        --     properties = {
+        --         tag = '1',
+        --         screen = 1,
+        --         volatile = true,
+        --         -- placement = awful.placement.maximized,
+        --     },
+        -- },
         {
             rule = {
                 class = 'flameshot',
@@ -129,6 +144,31 @@ module.init = function(config, client_buttons, client_keys)
                 },
             },
         },
+        -- {
+        --     rule = {
+        --         -- class = 'timedoctor2',
+        --         name  = 'TaskInformer — Time Doctor 2',
+        --     },
+        --     properties = {
+        --         border_width      = 3,
+        --         ontop             = true,
+        --         sticky            = false,
+        --         floating          = true,
+        --         titlebars_enabled = false,
+        --         -- moxwininfotif_wm_hints    = {
+        --         --     functions = {
+        --         --         all      = true,
+        --         --         resize   = true,
+        --         --         minimize = true,
+        --         --         maximize = true,
+        --         --     },
+        --         -- },
+        --         -- placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+        --         callback = function(c)
+        --             awful.placement.bottom(c)
+        --         end,
+        --     },
+        -- },
     }
     if config.dynamic_tagging then
         gears.table.merge(

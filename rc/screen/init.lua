@@ -88,6 +88,41 @@ module.init = function(
             menu = exitmenu,
         })
 
+        local geom  = s.geometry
+        s.myoverlay = wibox({
+            screen  = s,
+            x       = geom.x,
+            y       = geom.y + beautiful.top_bar_height,
+            visible = true,
+            opacity = 0,
+            ontop   = false,
+            type    = 'normal',
+            width   = geom.width,
+            height  = geom.height - beautiful.top_bar_height - beautiful.bottom_bar_height,
+        })
+
+        s.systray_set_screen = function()
+            if s.systray then
+                s.systray:set_screen(s)
+            end
+        end
+
+        -- s.myoverlay:buttons(gears.table.join(
+        --     awful.button({}, 1,
+        --         function()
+        --             mainmenu:show()
+        --         end
+        --     ),
+        --     awful.button({}, 3,
+        --         function()
+        --             exitmenu:show()
+        --         end
+        --     )
+        -- ))
+
+        s.myoverlay:connect_signal('mouse::enter', s.systray_set_screen)
+        s:connect_signal('mouse::enter', s.systray_set_screen)
+
         -- Dynamic widget management
         s.elements = {}
 

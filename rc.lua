@@ -61,8 +61,26 @@ local vicious = require('vicious')
 naughty.config.icon_dirs = {
   '/home/den/.local/share/icons',
   '/usr/share/pixmaps',
-  '/usr/share/icons/ArchLabs/48x48/status/',
-  '/usr/share/icons/ArchLabs/48x48/devices/',
+  '/usr/share/icons/',
+  -- '/usr/share/icons/Numix/48/status',
+  -- '/usr/share/icons/HighContrast/48x48/status',
+  -- '/usr/share/icons/Papirus/48x48/status',
+  -- '/usr/share/icons/hicolor/48x48/status',
+  -- '/usr/share/icons/Adwaita/48x48/categories',
+  -- '/usr/share/icons/Numix/48/categories',
+  -- '/usr/share/icons/HighContrast/48x48/categories',
+  -- '/usr/share/icons/Papirus/48x48/categories',
+  -- '/usr/share/icons/hicolor/48x48/categories',
+  -- '/usr/share/icons/Adwaita/l48x48/devices',
+  -- '/usr/share/icons/Numix/l48x48/devices',
+  -- '/usr/share/icons/HighContrast/l48x48/devices',
+  -- '/usr/share/icons/Papirus/l48x48/devices',
+  -- '/usr/share/icons/hicolor/l48x48/devices',
+  -- '/usr/share/icons/Adwaita/l48x48/devices',
+  -- '/usr/share/icons/Numix/l48x48/devices',
+  -- '/usr/share/icons/HighContrast/l48x48/devices',
+  -- '/usr/share/icons/Papirus/l48x48/devices',
+  -- '/usr/share/icons/hicolor/l48x48/devices',
 }
 naughty.config.icon_formats = { 'png', 'gif', 'svg' }
 
@@ -73,23 +91,24 @@ error_handling.init()
 -- tags
 tags.init(config)
 
--- layouts
-layouts.init(config)
 
 -- theme
 themes.init(config)
-local bling = require('bling')
-local tabbed = require('bling.module.tabbed')
-awful.client.object.tabbed_module = tabbed
+-- local bling = require('bling')
+-- local tabbed = require('bling.module.tabbed')
+-- awful.client.object.tabbed_module = tabbed
 
-bling.widget.tag_preview.enable {
-    show_client_content = true, -- Whether or not to show the client content
-    x                   = 0,    -- The x-coord of the popup
-    y                   = 30,    -- The y-coord of the popup
-    scale               = 0.2,  -- The scale of the previews compared to the screen
-    honor_padding       = false, -- Honor padding when creating widget size
-    honor_workarea      = false, -- Honor work area when creating widget size
-}
+-- bling.widget.tag_preview.enable {
+--     show_client_content = true, -- Whether or not to show the client content
+--     x                   = 0,    -- The x-coord of the popup
+--     y                   = 30,    -- The y-coord of the popup
+--     scale               = 0.2,  -- The scale of the previews compared to the screen
+--     honor_padding       = false, -- Honor padding when creating widget size
+--     honor_workarea      = true, -- Honor work area when creating widget size
+-- }
+
+-- layouts
+layouts.init(config)
 
 -- assets
 assets.init(config)

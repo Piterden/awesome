@@ -50,6 +50,7 @@ module.init = function(config)
     local terminal = config.terminal
     local lock_command = config.lock_command
     local telegram = config.telegram
+    local icon = menubar.utils.lookup_icon
 
     local myawesomemenu = {
         {
@@ -57,22 +58,22 @@ module.init = function(config)
             function()
                 return false, hotkeys_popup.show_help
             end,
-            menubar.utils.lookup_icon('preferences-desktop-keyboard-shortcuts')
+            icon('preferences-desktop-keyboard-shortcuts'),
         },
         {
             'manual',
             terminal .. ' -e man awesome',
-            menubar.utils.lookup_icon('system-help')
+            icon('system-help'),
         },
         {
             'edit config',
             gui_editor .. ' ' .. capi.awesome.conffile,
-            menubar.utils.lookup_icon('accessories-text-editor')
+            icon('accessories-text-editor'),
         },
         {
             'restart',
             capi.awesome.restart,
-            menubar.utils.lookup_icon('system-restart')
+            icon('system-restart'),
         }
     }
 
@@ -83,22 +84,22 @@ module.init = function(config)
                 {
                     'Telegram',
                     telegram,
-                    menubar.utils.lookup_icon('telegram-desktop')
+                    icon('telegram-desktop'),
                 },
                 {
                     'Terminal',
                     terminal,
-                    menubar.utils.lookup_icon('utilities-terminal')
+                    icon('utilities-terminal'),
                 },
                 {
                     'Browser',
                     browser,
-                    menubar.utils.lookup_icon('internet-web-browser')
+                    icon('internet-web-browser'),
                 },
                 {
                     'Files',
                     filemanager,
-                    menubar.utils.lookup_icon('system-file-manager')
+                    icon('system-file-manager'),
                 }
             },
             after = {
@@ -114,40 +115,49 @@ module.init = function(config)
     if config.exitmenu then
         local myexitmenu = {
             {
-                'log out',
+                'Log out',
                 function()
                     capi.awesome.quit()
                 end,
-                menubar.utils.lookup_icon('system-log-out')
+                icon('system-log-out'),
             },
             {
-                'lock screen',
+                'Lock screen',
                 lock_command,
-                menubar.utils.lookup_icon('system-lock-screen')
+                icon('system-lock-screen'),
             },
             {
-                'suspend',
+                'Suspend',
                 'systemctl suspend',
-                menubar.utils.lookup_icon('system-suspend')
+                icon('system-suspend'),
             },
             {
-                'hibernate',
+                'Hibernate',
                 'systemctl hibernate',
-                menubar.utils.lookup_icon('system-suspend-hibernate')
+                icon('system-suspend-hibernate'),
             },
             {
-                'reboot',
+                'Reboot',
                 'systemctl reboot',
-                menubar.utils.lookup_icon('system-reboot')
+                icon('system-reboot'),
             },
             {
-                'shutdown',
+                'Shutdown',
                 'poweroff',
-                menubar.utils.lookup_icon('system-shutdown')
+                icon('system-shutdown'),
             }
         }
         module.exitmenu = awful.menu({icon_size = 64, items = myexitmenu})
     end
+
+    module.client_menu = awful.menu({ items = {
+        { 'Maximize' },
+        { 'Minimize' },
+        { 'Move' },
+        { '' },
+        {},
+        {},
+    } })
 
     awesome.connect_signal('menus::hide::all', function ()
         module.mainmenu:hide()

@@ -158,7 +158,19 @@ module.init = function(config, mainmenu, client_actions_menu)
                 end
             end
         ),
-        awful.button({}, 3, awful.tag.viewtoggle),
+        awful.button(
+            {}, 3,
+            function(t)
+                awful.tag.viewtoggle(t)
+                for j, tag in pairs(awful.screen.focused().selected_tags) do
+                    for i, c in pairs(tag:clients()) do
+                        if c.floating then
+                            c:raise()
+                        end
+                    end
+                end
+            end
+        ),
         awful.button(
             {modkey}, 3, function(t)
                 if capi.client.focus then
@@ -213,7 +225,7 @@ module.init = function(config, mainmenu, client_actions_menu)
     )
 
     module.titlebar_buttons = function(c)
-        return gears.table.join(
+        local buttons = gears.table.join(
             awful.button(
                 {}, 1,
                 function()
@@ -233,7 +245,6 @@ module.init = function(config, mainmenu, client_actions_menu)
                     c.move_timer:start()
                 end,
                 function()
-                    capi.root.cursor('left_ptr')
                     if (c.move_timer) then
                         c.move_timer:stop()
                         c.move_timer   = nil
@@ -242,11 +253,12 @@ module.init = function(config, mainmenu, client_actions_menu)
                             awful.client.setmaster(c)
                         end)
                     end
+                    capi.root.cursor('left_ptr')
                 end
             ),
             awful.button({}, 2, nil,
                 function()
-                    c.tabbed_module.pick()
+                    c.minimized = true
                 end
             ),
             awful.button({}, 3,
@@ -267,15 +279,17 @@ module.init = function(config, mainmenu, client_actions_menu)
                     c.resize_timer:start()
                 end,
                 function()
-                    capi.root.cursor('left_ptr')
                     if (c.resize_timer) then
                         c.resize_timer:stop()
                         c.resize_timer = nil
                         c.mouse_coords = nil
                     end
+                    capi.root.cursor('left_ptr')
                 end
             )
         )
+
+        return buttons
     end
 
     local root = gears.table.join(

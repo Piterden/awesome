@@ -53,9 +53,9 @@ local module = {}
 -- [ module functions ] --------------------------------------------------------
 module.init = function(config, mainmenu)
     -- This is used later as the default terminal and editor to run.
-    local browser = config.browser
-    local terminal = config.terminal
-    local lock_command = config.lock_command
+    local browser       = config.browser
+    local terminal      = config.terminal
+    local lock_command  = config.lock_command
 
     -- Default modkey.
     local modkey = config.modkey
@@ -77,11 +77,47 @@ module.init = function(config, mainmenu)
             end, {description = 'lock screen', group = 'awesome'}
         ),
         awful.key(
+            {modkey}, 'F2', function()
+                awful.spawn.easy_async_with_shell(
+                    'xwininfo',
+                    function(stdout, stderr, reason, code)
+                        naughty.notify({
+                            preset   = naughty.config.presets.info,
+                            title    = 'xwininfo',
+                            text     = stdout,
+                            position = 'top_middle',
+                            bg       = '#8c375bd0',
+                            fg       = '#6ce17e',
+                            timeout  = 0,
+                        })
+                    end
+                )
+            end, {description = 'xwininfo', group = 'debug'}
+        ),
+        awful.key(
+            {modkey}, 'F3', function()
+                awful.spawn.easy_async_with_shell(
+                    'xprop',
+                    function(stdout, stderr, reason, code)
+                        naughty.notify({
+                            preset   = naughty.config.presets.info,
+                            title    = 'xprop',
+                            text     = stdout,
+                            position = 'top_middle',
+                            bg       = '#8c375bd0',
+                            fg       = '#6ce17e',
+                            timeout  = 0,
+                        })
+                    end
+                )
+            end, {description = 'xprop', group = 'debug'}
+        ),
+        awful.key(
             {modkey, 'Shift'}, 'q', capi.awesome.quit,
             {description = 'quit awesome', group = 'awesome'}
         ),
         awful.key(
-            {modkey}, 'w', function()
+            {modkey}, 'p', function()
                 mainmenu:show()
             end, {description = 'show main menu', group = 'awesome'}
         ),
@@ -92,6 +128,12 @@ module.init = function(config, mainmenu)
                     s.mybottomwibar.visible = not s.mybottomwibar.visible
                 end
             end, {description = 'toggle wibox', group = 'awesome'}
+        ),
+        awful.key(
+            {modkey}, 'a', function()
+                awful.spawn('/usr/bin/rofi -width 400 -lines 20 -columns 3 -dpi 150 -show drun -modi drun')
+                -- awful.spawn('/usr/bin/rofi -show drun -modi drun')
+            end, {description = 'launch rofi', group = 'launcher'}
         ),
         awful.key(
             {modkey}, 'e',
@@ -135,13 +177,14 @@ module.init = function(config, mainmenu)
                     "gtrans " .. "'" .. sel .. "'",
                     function (stdout, stderr, reason, code)
                         naughty.notify({
-                            preset        = naughty.config.presets.info,
-                            title         = 'Translate selection',
-                            text          = stdout,
-                            position      = 'top_middle',
-                            bg            = '#1c375b',
-                            fg            = '#fce17e',
-                            timeout       = 10,
+                            preset   = naughty.config.presets.info,
+                            title    = 'Translate selection',
+                            text     = stdout,
+                            position = 'top_middle',
+                            bg       = '#1c375bd0',
+                            fg       = '#fce17e',
+                            timeout  = 10,
+                            font     = 'Iosevka Medium 14',
                         })
                     end
                 )
@@ -286,12 +329,12 @@ module.init = function(config, mainmenu)
         -- ),
         -- [ screen ]---------------------------------------------------------------
         awful.key(
-            {modkey, 'Control'}, 'j', function()
+            {modkey}, '`', function()
                 awful.screen.focus_relative(1)
             end, {description = 'focus the next screen', group = 'screen'}
         ),
         awful.key(
-            {modkey, 'Control'}, 'k', function()
+            {modkey}, 'k', function()
                 awful.screen.focus_relative(-1)
             end, {description = 'focus the previous screen', group = 'screen'}
         ),
@@ -314,31 +357,31 @@ module.init = function(config, mainmenu)
             {modkey}, 'u', awful.client.urgent.jumpto,
             {description = 'jump to urgent client', group = 'client'}
         ),
+        -- awful.key(
+        --     {modkey}, 'Tab', function()
+        --         awful.client.focus.history.previous()
+        --         if capi.client.focus then
+        --             capi.client.focus:raise()
+        --         end
+        --     end, {description = 'go back', group = 'client'}
+        -- ),
+        -- awful.key(
+        --     {modkey, 'Shift'}, 'Tab', function()
+        --         awful.tag.history.restore()
+        --         if capi.client.focus then
+        --             capi.client.focus:raise()
+        --         end
+        --     end, {description = 'go back', group = 'tag'}
+        -- ),
         awful.key(
             {modkey}, 'Tab', function()
-                awful.client.focus.history.previous()
-                if capi.client.focus then
-                    capi.client.focus:raise()
-                end
-            end, {description = 'go back', group = 'client'}
+                awful.client.focus.byidx(1)
+            end, {description = 'focus previous by index', group = 'client'}
         ),
         awful.key(
             {modkey, 'Shift'}, 'Tab', function()
-                awful.tag.history.restore()
-                if capi.client.focus then
-                    capi.client.focus:raise()
-                end
-            end, {description = 'go back', group = 'tag'}
-        ),
-        awful.key(
-            {modkey}, 'j', function()
-                awful.client.focus.byidx(1)
-            end, {description = 'focus next by index', group = 'client'}
-        ),
-        awful.key(
-            {modkey}, 'k', function()
                 awful.client.focus.byidx(-1)
-            end, {description = 'focus previous by index', group = 'client'}
+            end, {description = 'focus next by index', group = 'client'}
         ),
         awful.key(
             {modkey, 'Control'}, 'n', function()
@@ -376,7 +419,7 @@ module.init = function(config, mainmenu)
         -- ),
         -- [ launcher ]-------------------------------------------------------------
         awful.key(
-            {modkey}, 'p', function()
+            {modkey}, 'w', function()
                 menubar.show()
             end, {description = 'show the menubar', group = 'launcher'}
         ),
@@ -391,12 +434,6 @@ module.init = function(config, mainmenu)
                     terminal, {intrusive = true, floating = true, ontop = true}
                 )
             end, {description = 'open a floating terminal', group = 'launcher'}
-        ),
-        awful.key(
-            {modkey}, 'a', function()
-                awful.spawn('/usr/bin/rofi -combi-modi window,drun -show combi -modi combi')
-                -- awful.spawn('/usr/bin/rofi -show drun -modi drun')
-            end, {description = 'launch rofi', group = 'launcher'}
         ),
         awful.key(
             {modkey}, 'b', function()
