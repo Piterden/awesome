@@ -34,6 +34,7 @@ local capi = {
 local gears = require('gears')
 local awful = require('awful')
 local beautiful = require('beautiful')
+local cairo = require("lgi").cairo
 
 -- helper functions
 local utils = require('rc.utils')
@@ -43,16 +44,44 @@ local module = {}
 
 -- [ local functions ] ---------------------------------------------------------
 local function client_menu_toggle_fn()
-    local instance = nil
-    return function()
-        if instance and instance.wibox.visible then
-            instance:hide()
-            instance = nil
+    return function(c)
+        local terms = {
+            {'Close', function()
+                c:kill()
+            end, '❌'},
+            {'Maximize', function()
+                c.maximized = true
+            end, '🔼'},
+        }
+        if c.tasklist_menu and c.tasklist_menu.wibox.visible then
+            c.tasklist_menu:hide()
+            c.tasklist_menu = nil
         else
-            instance = awful.menu.clients({theme = {width = 1000}})
+            c.tasklist_menu = awful.menu({
+                items = terms
+            }):show()
         end
     end
 end
+
+-- Create a surface
+local img = cairo.ImageSurface.create(cairo.Format.ARGB32, 100, 100)
+
+-- Create a context
+local cr  = cairo.Context(img)
+
+-- Set a red source
+-- cr:set_source(1, 0, 0)
+-- Alternative:
+cr:set_source(gears.color("#ff0000"))
+
+-- Add a 10px square path to the context at x=10, y=10
+cr:rectangle(10, 40, 30, 10)
+cr:set_line_width(10)
+cr:line_to(10, 10)
+
+-- Actually draw the rectangle on img
+cr:fill()
 
 -- ref.: https://stackoverflow.com/questions/62286322/grouping-windows-in-the-tasklist
 local function client_label(c)
@@ -100,6 +129,43 @@ local function client_label(c)
     return name
 end
 
+local active_menu
+local function context_menu(c)
+    if active_menu then
+        active_menu:hide()
+        active_menu = nil
+    end
+    local cli_min =     c.minimized                     and "  Развернуть"       or "  Свернуть"
+    local cli_top =     c.ontop                         and "★ Поверх всех"     or "  Поверх всех"
+    local cli_float =   awful.client.floating.get(c)    and "★ Floating"        or "  Floating"
+     --создаем список тегов(в виде подменю), для перемещения клиента на другой тег
+    -- local tag_menu = {}
+    -- local tags = root.tags()
+    -- for i, t in pairs(tags) do
+    --     if not tags[c.screen][i].selected then            --удаляем из списка выбранный тег/теги
+    --         table.insert(tag_menu, {tostring(t.name), function()
+    --             c:movetotag(tags[t.name])
+    --         end})
+    --     end
+    -- end
+    active_menu = awful.menu({
+        items = {
+            -- { "Переместить на", tag_menu },
+            {c.name,                function() end, c.icon                                  },
+            {"-------------------", function() end                                  },
+            {cli_min,               function() c.minimized = not c.minimized end, img},
+            {"  Fullscreen",        function() c.fullscreen = not c.fullscreen end  },
+            {cli_float,             function() awful.client.floating.toggle(c) end  },
+            {cli_top,               function() c.ontop = not c.ontop end            },
+            {"  Закрыть",           function() c:kill() end                         },
+        },
+        width = 150
+    })
+    active_menu:show()
+    return active_menu
+end
+
+
 local function client_stack_toggle_fn()
     local cl_menu
 
@@ -142,7 +208,11 @@ module.init = function(config, mainmenu, client_actions_menu)
     local modkey = config.modkey
     local function activateClient (c)
         c:emit_signal('request::activate', 'mouse', {raise = true})
-        awesome.emit_signal('menus::hide::all', 'mouse')
+        -- awesome.emit_signal('menus::hide::all', 'mouse')
+        if active_menu then
+            active_menu:hide()
+            active_menu = nil
+        end
     end
 
     module.taglist_buttons = gears.table.join(
@@ -191,29 +261,25 @@ module.init = function(config, mainmenu, client_actions_menu)
     )
 
     if config.tasklist == 'windows' or beautiful.tasklist == 'windows' then
-        module.tasklist_buttons = gears.table.join(
-            awful.button({}, 1, client_stack_toggle_fn()),
-            awful.button({}, 3, client_menu_toggle_fn()),
-            awful.button(
-                {}, 4, function()
-                    awful.client.focus.byidx(1)
-                end
-            ), awful.button(
-                {}, 5, function()
-                    awful.client.focus.byidx(-1)
-                end
+        module.tasklist_buttons = function (c)
+            return gears.table.join(
+                awful.button({}, 1, client_stack_toggle_fn()),
+                awful.button({}, 3, client_menu_toggle_fn()),
+                awful.button(
+                    {}, 4, function()
+                        awful.client.focus.byidx(1)
+                    end
+                ), awful.button(
+                    {}, 5, function()
+                        awful.client.focus.byidx(-1)
+                    end
+                )
             )
-        )
+        end
     else
         module.tasklist_buttons = gears.table.join(
-            awful.button({}, 1, function(c)
-                activateClient(c)
-            end),
-            awful.button(
-                {}, 3, function()
-                    awful.menu.client_list({theme = {width = 250}})
-                end
-            ),
+            awful.button({}, 1, activateClient),
+            awful.button({}, 3, context_menu),
             awful.button({}, 4, activateClient),
             awful.button({}, 5, activateClient)
         )

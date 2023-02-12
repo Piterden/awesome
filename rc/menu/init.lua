@@ -84,12 +84,12 @@ module.init = function(config)
                 {
                     'Telegram',
                     telegram,
-                    icon('telegram-desktop'),
+                    icon('telegram'),
                 },
                 {
                     'Terminal',
                     terminal,
-                    icon('utilities-terminal'),
+                    icon('terminal'),
                 },
                 {
                     'Browser',
@@ -119,7 +119,7 @@ module.init = function(config)
                 function()
                     capi.awesome.quit()
                 end,
-                icon('system-log-out'),
+                icon('/home/den/.local/share/icons/Zafiro-icons/actions/48/system-logout.svg'),
             },
             {
                 'Lock screen',

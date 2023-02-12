@@ -174,7 +174,7 @@ module.init = function(config, mainmenu)
                 local sel = capi.selection()
                 if not sel or sel == '' then return end
                 awful.spawn.easy_async_with_shell(
-                    "gtrans " .. "'" .. sel .. "'",
+                    "gtrans " .. "\"" .. sel .. "\"",
                     function (stdout, stderr, reason, code)
                         naughty.notify({
                             preset   = naughty.config.presets.info,
