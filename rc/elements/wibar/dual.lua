@@ -66,7 +66,7 @@ module.init = function(config)
                         {
                             {
                                 {
-                                    markup = '<b>🔒</b>',
+                                    markup = '<b>⚙️</b>',
                                     widget = wibox.widget.textbox,
                                 },
                                 halign = 'center',

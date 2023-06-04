@@ -47,13 +47,14 @@ module.init = function(s, taglist_buttons)
                     widget = wibox.widget.textbox,
                     -- valign = 'center',
                     -- halign = 'center',
+                    font   = beautiful.font .. ' 24pt'
                 },
                 id = 'text_margin_role',
-                left = 7,
-                right = 7,
+                left = 17,
+                right = 17,
                 widget = wibox.container.margin,
             },
-            forced_width = 20,
+            -- forced_width = 20,
             -- forced_height = 20,
             id     = 'background_role',
             -- bg = '#000000',
@@ -63,32 +64,32 @@ module.init = function(s, taglist_buttons)
             create_callback = function(self, t, index, objects) --luacheck: no unused args
                 -- BLING: Update the widget with the new tag
                 -- self:get_children_by_id('text_role')[1]:set_markup('<b> '..t.name..' </b>')
-                -- self:get_children_by_id('text_role')[1].markup = '<b> '..t.name..' </b>'
+                self:get_children_by_id('text_role')[1].markup = '<b> '..t.name..' </b>'
 
-                self:connect_signal('mouse::enter', function(w)
+                -- self:connect_signal('mouse::enter', function(w)
                     -- gears.debug.dump(f)
                     -- BLING: Only show widget when there are clients in the tag
-                    if #t:clients() > 0 then
-                        for _, c in ipairs(t:clients()) do
-                            c.tag_hover = true
-                        end
+                    -- if #t:clients() > 0 then
+                    --     for _, c in ipairs(t:clients()) do
+                    --         c.tag_hover = true
+                    --     end
 
-                        -- -- BLING: Update the widget with the new tag
-                        -- awesome.emit_signal("bling::tag_preview::update", t)
-                        -- -- BLING: Show the widget
-                        -- awesome.emit_signal("bling::tag_preview::visibility", s, true)
-                    end
-                end)
+                    --     -- -- BLING: Update the widget with the new tag
+                    --     -- awesome.emit_signal("bling::tag_preview::update", t)
+                    --     -- -- BLING: Show the widget
+                    --     -- awesome.emit_signal("bling::tag_preview::visibility", s, true)
+                    -- end
+                -- end)
 
-                self:connect_signal('mouse::leave', function()
-                    if #t:clients() > 0 then
-                        for _, c in ipairs(t:clients()) do
-                            c.tag_hover = false
-                        end
-                        -- BLING: Turn the widget off
-                        -- awesome.emit_signal("bling::tag_preview::visibility", s, false)
-                    end
-                end)
+                -- self:connect_signal('mouse::leave', function()
+                --     if #t:clients() > 0 then
+                --         for _, c in ipairs(t:clients()) do
+                --             c.tag_hover = false
+                --         end
+                --         -- BLING: Turn the widget off
+                --         -- awesome.emit_signal("bling::tag_preview::visibility", s, false)
+                --     end
+                -- end)
             end,
             update_callback = function(self, t, index, objects) --luacheck: no unused args
                 -- BLING: Update the widget with the new tag

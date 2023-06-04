@@ -564,10 +564,10 @@ module.init = function(config, mainmenu)
             end, {description = 'decrease dpi', group = 'theme'}
         ),
         -- [ widgets ]--------------------------------------------------------------
-        -- awful.key(
-        --     {modkey, 'Shift'}, 'w', utils.toggle_wibar_widgets,
-        --     {description = 'toggle wibar widgets', group = 'widgets'}
-        -- ),
+        awful.key(
+            {modkey, 'Shift'}, 'w', utils.toggle_wibar_widgets,
+            {description = 'toggle wibar widgets', group = 'widgets'}
+        ),
         -- awful.key(
         --     {modkey, altkey, 'Shift'}, 'w',
         --     utils.toggle_desktop_widget_visibility, {

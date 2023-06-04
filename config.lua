@@ -104,10 +104,10 @@ module.theme_overwrite = {
 -- module.desktop = 'arcs'
 
 -- hide desktop widgets
--- module.desktop_widgets_visible = false
+module.desktop_widgets_visible = false
 
 -- widgets to be added to the desktop pop up
--- module.arc_widgets = {'cpu', 'mem', 'fs', 'bat'}
+module.arc_widgets = {'cpu', 'mem', 'fs', 'bat'}
 
 -- select wibar configuration ('default'|'dual')
 module.wibar = 'dual'
@@ -116,13 +116,13 @@ module.wibar = 'dual'
 module.wibar_widgets = {
 -- 	'net_down',
 -- 	'net_up',
-    'temp',
     'cpu',
+    'bat',
+    'temp',
     'fs',
 --	'weather',
    	'mem',
---  'bat',
---  'vol',
+    'vol',
     'datetime',
 }
 

@@ -30,18 +30,33 @@ local wibox = require('wibox')
 local gears = require('gears')
 local beautiful = require('beautiful')
 local dpi = require('beautiful.xresources').apply_dpi
+local preview = require('rc.screen.task_preview')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 
 -- [ module functions ] --------------------------------------------------------
 module.default = function(s, tasklist_buttons)
+    preview.enable {
+        screen = s,
+        x = 50,                    -- The x-coord of the popup
+        y = 50,                    -- The y-coord of the popup
+        height = 400,              -- The height of the popup
+        width = 400,               -- The width of the popup
+        placement_fn = function(c) -- Place the widget using awful.placement (this overrides x & y)
+            awful.placement.next_to(c, {
+                preferred_positions = 'top',
+                preferred_anchors   = 'middle',
+                -- geometry            = ,
+            })
+        end
+    }
     local tasklist = awful.widget.tasklist {
         screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
         buttons = tasklist_buttons,
         style   = {
-            shape_border_width  = dpi(2),
+            shape_border_width  = dpi(1),
             shape_border_color  = '#777777',
             shape               = gears.shape.rounded_bar,
         },
@@ -104,6 +119,12 @@ module.default = function(s, tasklist_buttons)
             create_callback = function(self, c, index, objects) --luacheck: no unused args
                 self:get_children_by_id('tag_name')[1].text    = c:tags()[1].name
                 self:get_children_by_id('tag_role')[1].visible = #s.selected_tags > 1
+                self:connect_signal('mouse::enter', function()
+                    awesome.emit_signal('bling::task_preview::visibility', s, true, c, self)
+                end)
+                self:connect_signal('mouse::leave', function()
+                    awesome.emit_signal('bling::task_preview::visibility', s, false, c, self)
+                end)
             end,
             update_callback = function(self, c, index, objects) --luacheck: no unused args
                 self:get_children_by_id('tag_name')[1].text    = c:tags()[1].name

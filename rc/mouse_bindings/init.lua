@@ -131,13 +131,6 @@ end
 
 local active_menu
 local function context_menu(c)
-    if active_menu then
-        active_menu:hide()
-        active_menu = nil
-    end
-    local cli_min =     c.minimized                     and "  Развернуть"       or "  Свернуть"
-    local cli_top =     c.ontop                         and "★ Поверх всех"     or "  Поверх всех"
-    local cli_float =   awful.client.floating.get(c)    and "★ Floating"        or "  Floating"
      --создаем список тегов(в виде подменю), для перемещения клиента на другой тег
     -- local tag_menu = {}
     -- local tags = root.tags()
@@ -148,6 +141,13 @@ local function context_menu(c)
     --         end})
     --     end
     -- end
+    if active_menu then
+        active_menu:hide()
+        active_menu = nil
+    end
+    local cli_min =     c.minimized                     and "   Развернуть"      or "   Свернуть"
+    local cli_top =     c.ontop                         and "★ Поверх всех"     or "   Поверх всех"
+    local cli_float =   awful.client.floating.get(c)    and "★ Floating"        or "   Floating"
     active_menu = awful.menu({
         items = {
             -- { "Переместить на", tag_menu },
@@ -203,10 +203,10 @@ local function client_stack_toggle_fn()
 end
 
 -- [ module function ] ---------------------------------------------------------
-module.init = function(config, mainmenu, client_actions_menu)
+module.init = function(config, mainmenu)
     -- Default modkey.
     local modkey = config.modkey
-    local function activateClient (c)
+    local function activate_client (c)
         c:emit_signal('request::activate', 'mouse', {raise = true})
         -- awesome.emit_signal('menus::hide::all', 'mouse')
         if active_menu then
@@ -265,23 +265,20 @@ module.init = function(config, mainmenu, client_actions_menu)
             return gears.table.join(
                 awful.button({}, 1, client_stack_toggle_fn()),
                 awful.button({}, 3, client_menu_toggle_fn()),
-                awful.button(
-                    {}, 4, function()
-                        awful.client.focus.byidx(1)
-                    end
-                ), awful.button(
-                    {}, 5, function()
-                        awful.client.focus.byidx(-1)
-                    end
-                )
+                awful.button({}, 4, function()
+                    awful.client.focus.byidx(1)
+                end),
+                awful.button({}, 5, function()
+                    awful.client.focus.byidx(-1)
+                end)
             )
         end
     else
         module.tasklist_buttons = gears.table.join(
-            awful.button({}, 1, activateClient),
+            awful.button({}, 1, activate_client),
             awful.button({}, 3, context_menu),
-            awful.button({}, 4, activateClient),
-            awful.button({}, 5, activateClient)
+            awful.button({}, 4, activate_client),
+            awful.button({}, 5, activate_client)
         )
     end
 
